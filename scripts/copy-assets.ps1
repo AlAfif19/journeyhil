@@ -28,11 +28,32 @@ $sourceRoot = Join-Path $root "keperluan"
 $destRoot = Join-Path $root "public/assets"
 $libraryRoot = Join-Path $destRoot "library"
 $manifestPath = Join-Path $root "src/data/generatedAssets.ts"
+$processedManifestPath = Join-Path $root "src/data/processedAssets.ts"
+$transparentProcessor = Join-Path $PSScriptRoot "process-transparent-assets.py"
 $mediaExtensions = @(".jpg", ".jpeg", ".png", ".webp", ".mp4")
 
 New-Item -ItemType Directory -Force -Path $destRoot | Out-Null
-New-Item -ItemType Directory -Force -Path $libraryRoot | Out-Null
 New-Item -ItemType Directory -Force -Path (Split-Path -Parent $manifestPath) | Out-Null
+
+$generatedRoots = @(
+  $libraryRoot,
+  (Join-Path $destRoot "processed")
+)
+
+foreach ($generatedRoot in $generatedRoots) {
+  $resolvedDestRoot = [System.IO.Path]::GetFullPath($destRoot)
+  $resolvedGeneratedRoot = [System.IO.Path]::GetFullPath($generatedRoot)
+
+  if (-not $resolvedGeneratedRoot.StartsWith($resolvedDestRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "Refusing to clear generated assets outside public/assets: $resolvedGeneratedRoot"
+  }
+
+  if (Test-Path -LiteralPath $generatedRoot) {
+    Remove-Item -LiteralPath $generatedRoot -Recurse -Force
+  }
+
+  New-Item -ItemType Directory -Force -Path $generatedRoot | Out-Null
+}
 
 $stableFiles = @(
   @{ Source = "keperluan/foto hilfia sendiri/hilfia keren.jpeg"; Dest = "photos/hero-hilfia-keren.jpeg" },
@@ -62,6 +83,7 @@ foreach ($file in $stableFiles) {
 }
 
 $manifest = New-Object System.Collections.Generic.List[object]
+$processedManifest = New-Object System.Collections.Generic.List[object]
 $mediaFiles = Get-ChildItem -LiteralPath $sourceRoot -Recurse -File |
   Where-Object { $mediaExtensions -contains $_.Extension.ToLowerInvariant() } |
   Sort-Object FullName
@@ -94,6 +116,28 @@ foreach ($file in $mediaFiles) {
     kind = if ($file.Extension.ToLowerInvariant() -eq ".mp4") { "video" } else { "image" }
     source = $relative
   })
+
+  if (($category -eq "game" -or $category -eq "overlay3d") -and $file.Extension.ToLowerInvariant() -eq ".png") {
+    $processedFolder = Join-Path $destRoot "processed/$category"
+    $processedName = "$slug.png"
+    $processedDest = Join-Path $processedFolder $processedName
+    $processedCounter = 2
+
+    while (Test-Path -LiteralPath $processedDest) {
+      $processedName = "$slug-$processedCounter.png"
+      $processedDest = Join-Path $processedFolder $processedName
+      $processedCounter++
+    }
+
+    python $transparentProcessor $file.FullName $processedDest
+
+    $processedManifest.Add([ordered]@{
+      name = $baseName
+      src = "/assets/processed/$category/$processedName"
+      category = $category
+      source = $relative
+    })
+  }
 }
 
 $lines = New-Object System.Collections.Generic.List[string]
@@ -117,6 +161,27 @@ foreach ($asset in $manifest) {
 }
 
 $lines.Add("] as const satisfies readonly GeneratedAsset[];")
-$lines.Add("")
 
 Set-Content -LiteralPath $manifestPath -Value $lines -Encoding UTF8
+
+$processedLines = New-Object System.Collections.Generic.List[string]
+$processedLines.Add("export type ProcessedAsset = {")
+$processedLines.Add("  name: string;")
+$processedLines.Add("  src: string;")
+$processedLines.Add('  category: "game" | "overlay3d";')
+$processedLines.Add("  source: string;")
+$processedLines.Add("};")
+$processedLines.Add("")
+$processedLines.Add("export const processedAssets = [")
+
+foreach ($asset in $processedManifest) {
+  $name = ($asset.name -replace "\\", "\\") -replace '"', '\"'
+  $src = ($asset.src -replace "\\", "\\") -replace '"', '\"'
+  $category = $asset.category
+  $source = ($asset.source -replace "\\", "\\") -replace '"', '\"'
+  $processedLines.Add("  { name: ""$name"", src: ""$src"", category: ""$category"", source: ""$source"" },")
+}
+
+$processedLines.Add("] as const satisfies readonly ProcessedAsset[];")
+
+Set-Content -LiteralPath $processedManifestPath -Value $processedLines -Encoding UTF8

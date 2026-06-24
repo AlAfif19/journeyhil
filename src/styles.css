@@ -498,7 +498,7 @@ button:focus-visible {
   bottom: 14%;
   width: clamp(88px, 16vw, 160px);
   transform: translateX(-50%);
-  transition: left 520ms ease, transform 220ms ease, filter 220ms ease;
+  transition: left 520ms ease, bottom 520ms ease, transform 220ms ease, filter 220ms ease;
   filter: drop-shadow(0 14px 18px rgb(0 0 0 / 35%));
 }
 
@@ -516,14 +516,7 @@ button:focus-visible {
 }
 
 .game-object {
-  position: absolute;
-  z-index: 2;
-  padding: 0.35rem 0.55rem;
-  border-radius: 999px;
-  color: var(--ink);
-  background: rgb(255 250 253 / 88%);
-  font-size: 0.78rem;
-  font-weight: 900;
+  display: none;
 }
 
 .object-food {
@@ -778,7 +771,7 @@ button:focus-visible {
 .decorative-overlays {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 8;
   pointer-events: none;
 }
 
@@ -1007,6 +1000,58 @@ button:focus-visible {
   font-size: 0.72rem;
 }
 
+.station-title {
+  position: absolute;
+  z-index: 3;
+  width: clamp(76px, 10vw, 124px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 10px 12px rgb(0 0 0 / 34%));
+}
+
+.station-title img {
+  width: 100%;
+  object-fit: contain;
+}
+
+.station-title.active {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.food-shelf {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.8rem;
+}
+
+.food-shelf button {
+  display: grid;
+  place-items: center;
+  min-height: 94px;
+  padding: 0.45rem;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 8px;
+  color: var(--white);
+  background: rgb(255 255 255 / 9%);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.food-shelf button:hover {
+  color: var(--ink);
+  background: linear-gradient(135deg, var(--lavender), var(--soft-blue));
+}
+
+.food-shelf img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
 .game-inventory {
   display: grid;
   grid-auto-columns: minmax(74px, 96px);
@@ -1048,6 +1093,113 @@ button:focus-visible {
 
 .theme-magical .hero-section {
   grid-template-columns: minmax(0, 0.95fr) minmax(300px, 0.72fr);
+}
+
+.theme-magical .hero-copy,
+.theme-magical .hero-photo-frame,
+.theme-magical .section-heading,
+.theme-magical .timeline-path,
+.theme-magical .gallery-grid,
+.theme-magical .gallery-archive,
+.theme-magical .kuromi-game {
+  position: relative;
+  z-index: 10;
+}
+
+.theme-magical .hero-section > .decorative-overlays-hero {
+  display: none;
+}
+
+.theme-magical .overlay-asset {
+  z-index: 40;
+  max-width: 21vw;
+}
+
+.theme-magical .overlay-asset-1 {
+  top: 86px;
+  right: 18px;
+  width: clamp(110px, 14vw, 220px);
+}
+
+.theme-magical .overlay-asset-2 {
+  left: 16px;
+  bottom: 22px;
+  width: clamp(106px, 13vw, 206px);
+}
+
+.theme-magical .overlay-asset-3 {
+  top: 44%;
+  right: 10px;
+  width: clamp(98px, 12vw, 190px);
+}
+
+.theme-magical .overlay-asset-4 {
+  top: 42%;
+  right: auto;
+  bottom: auto;
+  left: 10px;
+  width: clamp(102px, 13vw, 202px);
+}
+
+.magical-sticky-assets {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+}
+
+.magical-sticky-asset {
+  position: fixed;
+  width: clamp(128px, 15vw, 270px);
+  object-fit: contain;
+  filter: drop-shadow(0 18px 24px rgb(0 0 0 / 28%));
+}
+
+.sticky-top-left {
+  top: 34px;
+  left: -48px;
+  width: clamp(118px, 12vw, 190px);
+}
+
+.sticky-top-right {
+  top: 46px;
+  right: -64px;
+  width: clamp(132px, 13vw, 220px);
+}
+
+.sticky-mid-left {
+  top: 42vh;
+  left: -108px;
+}
+
+.sticky-mid-right {
+  top: 42vh;
+  right: -118px;
+}
+
+.sticky-bottom-left {
+  bottom: 34px;
+  left: -78px;
+  width: clamp(126px, 14vw, 240px);
+}
+
+.sticky-bottom-right {
+  right: -86px;
+  bottom: 34px;
+}
+
+.sticky-upper-rail {
+  top: 58vh;
+  left: -56px;
+  width: clamp(96px, 10vw, 176px);
+  transform: rotate(-7deg);
+}
+
+.sticky-lower-rail {
+  top: 60vh;
+  right: -62px;
+  width: clamp(96px, 10vw, 176px);
+  transform: rotate(7deg);
 }
 
 .theme-magical .hero-photo-frame {

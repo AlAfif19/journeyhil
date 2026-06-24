@@ -1,4 +1,5 @@
 import { generatedAssets } from "./generatedAssets";
+import { processedAssets } from "./processedAssets";
 
 function findAsset(name: string, category?: (typeof generatedAssets)[number]["category"]) {
   const normalized = name.toLowerCase();
@@ -9,6 +10,20 @@ function findAsset(name: string, category?: (typeof generatedAssets)[number]["ca
 
   if (!asset) {
     throw new Error(`Missing generated asset: ${name}`);
+  }
+
+  return asset.src;
+}
+
+function findProcessedAsset(name: string, category?: (typeof processedAssets)[number]["category"]) {
+  const normalized = name.toLowerCase();
+  const asset = processedAssets.find((item) => {
+    const matchesName = item.name.toLowerCase() === normalized || item.source.toLowerCase().includes(normalized);
+    return matchesName && (!category || item.category === category);
+  });
+
+  if (!asset) {
+    throw new Error(`Missing processed asset: ${name}`);
   }
 
   return asset.src;
@@ -34,53 +49,67 @@ export const assetPaths = {
   },
   game: {
     room: "/assets/game/kuromi-room.png",
-    kuromiPixel: "/assets/game/kuromi-pixel.png",
-    kuromi2d: "/assets/game/kuromi-2d.png",
+    kuromiPixel: findProcessedAsset("pixel kuromi idle", "game"),
+    kuromi2d: findProcessedAsset("kuromi 2d idle", "overlay3d"),
     assets: "/assets/game/game-assets.png",
     decor: "/assets/game/game-decor.png",
-    bed: findAsset("bed", "game"),
-    bathtub: findAsset("bathtub", "game"),
-    strawberry: findAsset("strawberry", "game"),
-    iceCream: findAsset("eskrim", "game"),
-    doll: findAsset("doll", "game"),
-    book: findAsset("title toy", "game"),
+    bed: findProcessedAsset("bed", "game"),
+    bathtub: findProcessedAsset("bathtub", "game"),
+    strawberry: findProcessedAsset("strawberry", "game"),
+    iceCream: findProcessedAsset("eskrim", "game"),
+    doll: findProcessedAsset("doll", "game"),
+    book: findProcessedAsset("title toy", "game"),
   },
 } as const;
 
 export const kuromiMoodSprites = {
-  happy: findAsset("pixel kuromi happy", "game"),
-  dirty: findAsset("pixel kuromi dirty", "game"),
-  sleepy: findAsset("pixel kuromi sleep", "game"),
-  sad: findAsset("pixel kuromi sad", "game"),
-  angry: findAsset("kuromi 2d angry", "overlay3d"),
-  idle: findAsset("pixel kuromi idle", "game"),
-  eat: findAsset("pixel kuromi eat", "game"),
-  play: findAsset("kuromi 2d play", "overlay3d"),
+  happy: findProcessedAsset("pixel kuromi happy", "game"),
+  dirty: findProcessedAsset("pixel kuromi dirty", "game"),
+  sleepy: findProcessedAsset("pixel kuromi sleep", "game"),
+  sad: findProcessedAsset("pixel kuromi sad", "game"),
+  angry: findProcessedAsset("kuromi 2d angry", "overlay3d"),
+  idle: findProcessedAsset("pixel kuromi idle", "game"),
+  eat: findProcessedAsset("pixel kuromi eat", "game"),
+  play: findProcessedAsset("kuromi 2d play", "overlay3d"),
 } as const;
 
 export const overlayAssets = {
   magical: [
-    findAsset("moon aset", "overlay3d"),
-    findAsset("star aset", "overlay3d"),
-    findAsset("claud aset", "overlay3d"),
-    findAsset("kuromi 3d stand", "overlay3d"),
+    findProcessedAsset("moon aset", "overlay3d"),
+    findProcessedAsset("star aset", "overlay3d"),
+    findProcessedAsset("claud aset", "overlay3d"),
+    findProcessedAsset("kuromi 3d stand", "overlay3d"),
   ],
   pixel: [
-    findAsset("kuromi 3d play", "overlay3d"),
-    findAsset("bom", "game"),
-    findAsset("kuromi doll", "game"),
-    findAsset("cake", "game"),
+    findProcessedAsset("kuromi 3d play", "overlay3d"),
+    findProcessedAsset("bom", "game"),
+    findProcessedAsset("kuromi doll", "game"),
+    findProcessedAsset("cake", "game"),
   ],
   scrapbook: [
-    findAsset("love aset", "overlay3d"),
-    findAsset("ribbon aset", "overlay3d"),
-    findAsset("kuromi aset", "overlay3d"),
-    findAsset("kuromi 3d sit", "overlay3d"),
+    findProcessedAsset("love aset", "overlay3d"),
+    findProcessedAsset("ribbon aset", "overlay3d"),
+    findProcessedAsset("kuromi aset", "overlay3d"),
+    findProcessedAsset("kuromi 3d sit", "overlay3d"),
   ],
 } as const;
+
+export const magicalStickyAssets = [
+  { slot: "top-left", src: findProcessedAsset("star aset", "overlay3d") },
+  { slot: "top-right", src: findProcessedAsset("moon aset", "overlay3d") },
+  { slot: "mid-left", src: findProcessedAsset("claud aset", "overlay3d") },
+  { slot: "mid-right", src: findProcessedAsset("kuromi 3d stand", "overlay3d") },
+  { slot: "bottom-left", src: findProcessedAsset("love aset", "overlay3d") },
+  { slot: "bottom-right", src: findProcessedAsset("ribbon aset", "overlay3d") },
+  { slot: "upper-rail", src: findProcessedAsset("kuromi 3d happy", "overlay3d") },
+  { slot: "lower-rail", src: findProcessedAsset("kuromi aset", "overlay3d") },
+] as const;
 
 export const allMediaAssets = generatedAssets;
 
 export const allPhotoAssets = generatedAssets.filter((asset) => asset.category === "profile" || asset.category === "gallery");
 
 export const gameObjectAssets = generatedAssets.filter((asset) => asset.kind === "image" && asset.category === "game");
+export const processedGameObjectAssets = processedAssets.filter((asset) => asset.category === "game");
+
+export { processedAssets };

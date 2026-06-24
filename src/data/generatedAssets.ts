@@ -120,4 +120,3 @@ export const generatedAssets = [
   { name: "smk 13 bandung", src: "/assets/library/place/smk-13-bandung.jpg", category: "place", kind: "image", source: "smk 13 bandung.jpg" },
   { name: "universitas kebangsaan republik indonesia", src: "/assets/library/place/universitas-kebangsaan-republik-indonesia.webp", category: "place", kind: "image", source: "universitas kebangsaan republik indonesia.webp" },
 ] as const satisfies readonly GeneratedAsset[];
-

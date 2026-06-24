@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { applyGameAction, clampStat, decayStats, initialGameStats, moodForStats } from "./game";
+import {
+  applyFoodItem,
+  applyStationAction,
+  clampStat,
+  decayStats,
+  gameStations,
+  initialGameStats,
+  moodForStats,
+  resolveKuromiSprite,
+  type GameState,
+} from "./game";
 
 describe("game stat helpers", () => {
   it("clamps stat values between 0 and 100", () => {
@@ -9,13 +19,16 @@ describe("game stat helpers", () => {
 
   it("applies Kuromi care actions and keeps values in range", () => {
     const hungry = { ...initialGameStats, hunger: 70, happiness: 95 };
-    expect(applyGameAction(hungry, "eat")).toMatchObject({ hunger: 100, happiness: 100 });
+    expect(applyStationAction({ stats: hungry, mood: "happy", activeAction: null, activeStation: null }, "food").stats).toMatchObject({
+      hunger: 100,
+      happiness: 100,
+    });
 
     const tired = { ...initialGameStats, energy: 80 };
-    expect(applyGameAction(tired, "sleep").energy).toBe(100);
+    expect(applyStationAction({ stats: tired, mood: "happy", activeAction: null, activeStation: null }, "bed").stats.energy).toBe(100);
 
-    const studying = applyGameAction(initialGameStats, "study");
-    expect(studying.experience).toBe(20);
+    const studying = applyStationAction({ stats: initialGameStats, mood: "happy", activeAction: null, activeStation: null }, "study");
+    expect(studying.stats.experience).toBe(20);
   });
 
   it("decays only the visible care stats every interval", () => {
@@ -32,5 +45,56 @@ describe("game stat helpers", () => {
     expect(moodForStats({ ...initialGameStats, hunger: 10 })).toBe("sad");
     expect(moodForStats({ ...initialGameStats, energy: 10 })).toBe("sleepy");
     expect(moodForStats(initialGameStats)).toBe("happy");
+  });
+
+  it("gives different foods different stat effects", () => {
+    const baseState = {
+      stats: { ...initialGameStats, hunger: 30, happiness: 30 },
+      mood: "happy",
+      activeAction: null,
+      activeStation: null,
+    } satisfies GameState;
+
+    const strawberry = applyFoodItem(baseState, "strawberry").stats;
+    const iceCream = applyFoodItem(baseState, "iceCream").stats;
+    const cake = applyFoodItem(baseState, "cake").stats;
+
+    expect(strawberry).not.toEqual(iceCream);
+    expect(cake).not.toEqual(strawberry);
+    expect(strawberry.hunger).toBeGreaterThan(baseState.stats.hunger);
+    expect(iceCream.happiness).toBeGreaterThan(strawberry.happiness);
+  });
+
+  it("bath cleans dirty Kuromi and does not keep dirty as active sprite", () => {
+    const dirtyState = {
+      stats: { ...initialGameStats, cleanliness: 5, happiness: 45 },
+      mood: "dirty",
+      activeAction: null,
+      activeStation: null,
+    } satisfies GameState;
+
+    const cleaned = applyStationAction(dirtyState, "bath");
+
+    expect(cleaned.stats.cleanliness).toBeGreaterThan(80);
+    expect(cleaned.mood).toBe("happy");
+    expect(resolveKuromiSprite(cleaned)).not.toContain("dirty");
+  });
+
+  it("uses action sprite priority without mapping bath to dirty", () => {
+    const bathing = {
+      stats: { ...initialGameStats, cleanliness: 5 },
+      mood: "dirty",
+      activeAction: "bath" as const,
+      activeStation: "bath" as const,
+    } satisfies GameState;
+
+    expect(resolveKuromiSprite(bathing)).toContain("happy");
+  });
+
+  it("defines station title assets and map positions", () => {
+    expect(gameStations).toHaveLength(5);
+    expect(gameStations.every((station) => station.titleAsset.includes("title"))).toBe(true);
+    expect(gameStations.every((station) => station.position.x >= 0 && station.position.x <= 100)).toBe(true);
+    expect(gameStations.every((station) => station.position.y >= 0 && station.position.y <= 100)).toBe(true);
   });
 });

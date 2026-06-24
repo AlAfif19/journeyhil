@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { generatedAssets } from "./generatedAssets";
-import { kuromiMoodSprites } from "./assets";
+import { processedAssets } from "./processedAssets";
+import { kuromiMoodSprites, magicalStickyAssets } from "./assets";
 import { timelineItems } from "./journey";
 
 describe("asset coverage", () => {
@@ -23,5 +24,18 @@ describe("asset coverage", () => {
   it("gives every timeline event an image", () => {
     expect(timelineItems).toHaveLength(9);
     expect(timelineItems.every((item) => Boolean(item.image))).toBe(true);
+  });
+
+  it("generates processed transparent assets for Magical overlays and game UI", () => {
+    expect(processedAssets.length).toBeGreaterThan(20);
+    expect(processedAssets.some((asset) => asset.category === "overlay3d")).toBe(true);
+    expect(processedAssets.some((asset) => asset.category === "game")).toBe(true);
+    expect(processedAssets.every((asset) => asset.src.includes("/assets/processed/"))).toBe(true);
+  });
+
+  it("provides a reusable sticky 3D asset layer for Magical", () => {
+    expect(magicalStickyAssets.length).toBeGreaterThanOrEqual(8);
+    expect(magicalStickyAssets.every((asset) => asset.src.includes("/assets/processed/"))).toBe(true);
+    expect(magicalStickyAssets.every((asset) => asset.slot.length > 0)).toBe(true);
   });
 });
