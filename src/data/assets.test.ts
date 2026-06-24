@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { generatedAssets } from "./generatedAssets";
 import { processedAssets } from "./processedAssets";
-import { kuromiMoodSprites, magicalStickyAssets } from "./assets";
+import { kuromiMoodSprites, overlayAssets } from "./assets";
 import { timelineItems } from "./journey";
 
 describe("asset coverage", () => {
@@ -33,9 +33,9 @@ describe("asset coverage", () => {
     expect(processedAssets.every((asset) => asset.src.includes("/assets/processed/"))).toBe(true);
   });
 
-  it("provides a reusable sticky 3D asset layer for Magical", () => {
-    expect(magicalStickyAssets.length).toBeGreaterThanOrEqual(8);
-    expect(magicalStickyAssets.every((asset) => asset.src.includes("/assets/processed/"))).toBe(true);
-    expect(magicalStickyAssets.every((asset) => asset.slot.length > 0)).toBe(true);
+  it("uses non-Kuromi processed ornaments for Magical section overlays", () => {
+    expect(overlayAssets.magical.length).toBeGreaterThanOrEqual(5);
+    expect(overlayAssets.magical.every((asset) => asset.includes("/assets/processed/overlay3d/"))).toBe(true);
+    expect(overlayAssets.magical.every((asset) => !asset.includes("kuromi"))).toBe(true);
   });
 });

@@ -444,10 +444,15 @@ button:focus-visible {
 }
 
 .gallery-card figcaption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
   display: flex;
   gap: 0.4rem;
   align-items: center;
   padding: 0.8rem;
+  background: linear-gradient(180deg, transparent, rgb(20 12 34 / 84%) 34%, rgb(20 12 34 / 92%));
   font-weight: 900;
 }
 
@@ -921,26 +926,44 @@ button:focus-visible {
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 0.9rem;
+  grid-auto-flow: dense;
+  grid-auto-rows: 92px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(0.65rem, 1.2vw, 1rem);
   columns: initial;
 }
 
 .gallery-grid .gallery-card:nth-child(1),
 .gallery-grid .gallery-card:nth-child(8) {
-  grid-column: span 3;
-  grid-row: span 2;
+  grid-column: span 5;
+  grid-row: span 5;
 }
 
 .gallery-grid .gallery-card:nth-child(2),
 .gallery-grid .gallery-card:nth-child(5),
 .gallery-grid .gallery-card:nth-child(9) {
-  grid-column: span 2;
+  grid-column: span 4;
+  grid-row: span 3;
+}
+
+.gallery-grid .gallery-card:nth-child(3),
+.gallery-grid .gallery-card:nth-child(6),
+.gallery-grid .gallery-card:nth-child(10) {
+  grid-column: span 3;
+  grid-row: span 4;
+}
+
+.gallery-grid .gallery-card:nth-child(4),
+.gallery-grid .gallery-card:nth-child(7),
+.gallery-grid .gallery-card:nth-child(11),
+.gallery-grid .gallery-card:nth-child(12) {
+  grid-column: span 3;
+  grid-row: span 3;
 }
 
 .gallery-grid .gallery-card {
   display: grid;
-  min-height: 230px;
+  min-height: 0;
   margin: 0;
 }
 
@@ -1107,103 +1130,82 @@ button:focus-visible {
 }
 
 .theme-magical .hero-section > .decorative-overlays-hero {
-  display: none;
+  display: block;
 }
 
 .theme-magical .overlay-asset {
-  z-index: 40;
-  max-width: 21vw;
-}
-
-.theme-magical .overlay-asset-1 {
-  top: 86px;
-  right: 18px;
-  width: clamp(110px, 14vw, 220px);
-}
-
-.theme-magical .overlay-asset-2 {
-  left: 16px;
-  bottom: 22px;
-  width: clamp(106px, 13vw, 206px);
-}
-
-.theme-magical .overlay-asset-3 {
-  top: 44%;
-  right: 10px;
-  width: clamp(98px, 12vw, 190px);
-}
-
-.theme-magical .overlay-asset-4 {
-  top: 42%;
-  right: auto;
-  bottom: auto;
-  left: 10px;
-  width: clamp(102px, 13vw, 202px);
-}
-
-.magical-sticky-assets {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
+  z-index: 8;
+  max-width: 18vw;
   pointer-events: none;
 }
 
-.magical-sticky-asset {
-  position: fixed;
-  width: clamp(128px, 15vw, 270px);
-  object-fit: contain;
-  filter: drop-shadow(0 18px 24px rgb(0 0 0 / 28%));
+.theme-magical .overlay-asset-1 {
+  top: 18px;
+  right: -46px;
+  width: clamp(118px, 12vw, 210px);
 }
 
-.sticky-top-left {
-  top: 34px;
-  left: -48px;
-  width: clamp(118px, 12vw, 190px);
+.theme-magical .overlay-asset-2 {
+  top: 72px;
+  left: -50px;
+  width: clamp(104px, 11vw, 184px);
 }
 
-.sticky-top-right {
-  top: 46px;
-  right: -64px;
-  width: clamp(132px, 13vw, 220px);
+.theme-magical .overlay-asset-3 {
+  top: auto;
+  right: -84px;
+  bottom: 18%;
+  width: clamp(140px, 13vw, 230px);
 }
 
-.sticky-mid-left {
-  top: 42vh;
-  left: -108px;
+.theme-magical .overlay-asset-4 {
+  top: auto;
+  right: auto;
+  bottom: -22px;
+  left: -58px;
+  width: clamp(118px, 12vw, 210px);
 }
 
-.sticky-mid-right {
-  top: 42vh;
-  right: -118px;
+.theme-magical .overlay-asset-5 {
+  right: clamp(10px, 3vw, 42px);
+  bottom: -26px;
+  width: clamp(120px, 12vw, 210px);
 }
 
-.sticky-bottom-left {
-  bottom: 34px;
-  left: -78px;
-  width: clamp(126px, 14vw, 240px);
-}
-
-.sticky-bottom-right {
-  right: -86px;
-  bottom: 34px;
-}
-
-.sticky-upper-rail {
-  top: 58vh;
-  left: -56px;
-  width: clamp(96px, 10vw, 176px);
-  transform: rotate(-7deg);
-}
-
-.sticky-lower-rail {
-  top: 60vh;
-  right: -62px;
-  width: clamp(96px, 10vw, 176px);
-  transform: rotate(7deg);
+.theme-magical .decorative-overlays-gallery .overlay-asset-2 {
+  top: -24px;
+  left: -96px;
 }
 
 .theme-magical .hero-photo-frame {
   transform: translateY(14px);
+}
+
+@media (min-width: 1180px) {
+  .theme-magical .kuromi-game {
+    padding: clamp(1.25rem, 2vw, 2rem);
+  }
+
+  .theme-magical .game-stage {
+    min-height: clamp(430px, 32vw, 560px);
+    background:
+      radial-gradient(circle at 50% 50%, rgb(244 154 194 / 12%), transparent 42%),
+      linear-gradient(180deg, rgb(160 210 235 / 18%), rgb(42 27 61 / 76%));
+  }
+
+  .theme-magical .room-art {
+    padding: clamp(8px, 1vw, 16px);
+    object-fit: contain;
+    opacity: 0.78;
+  }
+
+  .theme-magical .kuromi-sprite {
+    width: clamp(112px, 10vw, 176px);
+  }
+
+  .theme-magical .station-title {
+    width: clamp(92px, 7.8vw, 132px);
+  }
 }
 
 .theme-magical .timeline-path::before {

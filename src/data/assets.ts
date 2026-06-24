@@ -78,7 +78,8 @@ export const overlayAssets = {
     findProcessedAsset("moon aset", "overlay3d"),
     findProcessedAsset("star aset", "overlay3d"),
     findProcessedAsset("claud aset", "overlay3d"),
-    findProcessedAsset("kuromi 3d stand", "overlay3d"),
+    findProcessedAsset("love aset", "overlay3d"),
+    findProcessedAsset("ribbon aset", "overlay3d"),
   ],
   pixel: [
     findProcessedAsset("kuromi 3d play", "overlay3d"),
@@ -93,17 +94,6 @@ export const overlayAssets = {
     findProcessedAsset("kuromi 3d sit", "overlay3d"),
   ],
 } as const;
-
-export const magicalStickyAssets = [
-  { slot: "top-left", src: findProcessedAsset("star aset", "overlay3d") },
-  { slot: "top-right", src: findProcessedAsset("moon aset", "overlay3d") },
-  { slot: "mid-left", src: findProcessedAsset("claud aset", "overlay3d") },
-  { slot: "mid-right", src: findProcessedAsset("kuromi 3d stand", "overlay3d") },
-  { slot: "bottom-left", src: findProcessedAsset("love aset", "overlay3d") },
-  { slot: "bottom-right", src: findProcessedAsset("ribbon aset", "overlay3d") },
-  { slot: "upper-rail", src: findProcessedAsset("kuromi 3d happy", "overlay3d") },
-  { slot: "lower-rail", src: findProcessedAsset("kuromi aset", "overlay3d") },
-] as const;
 
 export const allMediaAssets = generatedAssets;
 

@@ -157,7 +157,7 @@ export function GallerySection({ theme }: { theme: ThemeKey }) {
   const archive = galleryItems.slice(12);
 
   return (
-    <section className="section-wrap gallery-section">
+    <section className="section-wrap gallery-section" id="gallery">
       <DecorativeOverlays theme={theme} area="gallery" />
       <div className="section-heading">
         <span>{theme === "scrapbook" ? "Polaroid memories" : theme === "pixel" ? "Inventory album" : "Floating gallery"}</span>
