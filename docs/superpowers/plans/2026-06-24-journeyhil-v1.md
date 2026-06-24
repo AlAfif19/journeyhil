@@ -6,7 +6,7 @@
 
 **Architecture:** A Vite React app with client-side routing. Shared data, asset manifests, and game logic feed theme-specific page components so all routes are complete without duplicating content.
 
-**Tech Stack:** React, Vite, TypeScript, Tailwind CSS, Motion, Lucide React, local static assets, Vercel-ready build output.
+**Tech Stack:** React, Vite, TypeScript, Tailwind CSS, Motion, Lucide React, Vitest, local static assets, Vercel-ready build output.
 
 ## Global Constraints
 
@@ -37,6 +37,9 @@
 - Create `src/data/journey.ts`: profile, story, timeline, gallery, game data.
 - Create `src/data/assets.ts`: public asset path constants.
 - Create `src/lib/game.ts`: stat math and action helpers.
+- Create `src/lib/game.test.ts`: red-green tests for game stat behavior.
+- Create `src/lib/routing.ts`: pure route resolver.
+- Create `src/lib/routing.test.ts`: red-green tests for route behavior.
 - Create `src/components/ThemeShell.tsx`: navigation and page frame.
 - Create `src/components/sections.tsx`: hero/about/story/timeline/gallery sections with theme variants.
 - Create `src/components/KuromiCareGame.tsx`: reusable game UI.
@@ -67,7 +70,7 @@
 
 **Interfaces:**
 - Produces: a runnable Vite React TypeScript app with a temporary title screen.
-- Produces: npm scripts `dev`, `build`, `preview`, `lint`.
+- Produces: npm scripts `dev`, `build`, `preview`, `lint`, `test`.
 
 - [ ] **Step 1: Create package and config files**
 
@@ -83,21 +86,23 @@ Create `package.json`:
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "lint": "tsc -b --pretty false"
+    "lint": "tsc -b --pretty false",
+    "test": "vitest run"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.468.0",
     "vite": "^6.0.7",
-    "typescript": "^5.7.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
   }
 }
 ```
@@ -365,6 +370,7 @@ rtk git commit -m "feat: add JourneyHil assets and data"
 
 **Files:**
 - Create: `src/lib/game.ts`
+- Create: `src/lib/game.test.ts`
 - Create: `src/components/ThemeShell.tsx`
 - Create: `src/components/KuromiCareGame.tsx`
 
@@ -375,7 +381,56 @@ rtk git commit -m "feat: add JourneyHil assets and data"
 - Produces: `ThemeShell({ theme, children })`.
 - Produces: `KuromiCareGame({ theme })`.
 
-- [ ] **Step 1: Create game logic**
+- [ ] **Step 1: Write failing game logic tests**
+
+Create `src/lib/game.test.ts`:
+
+```ts
+import { describe, expect, it } from "vitest";
+import { applyGameAction, clampStat, decayStats, initialGameStats, moodForStats } from "./game";
+
+describe("game stat helpers", () => {
+  it("clamps stat values between 0 and 100", () => {
+    expect(clampStat(140)).toBe(100);
+    expect(clampStat(-12)).toBe(0);
+  });
+
+  it("applies Kuromi care actions and keeps values in range", () => {
+    const hungry = { ...initialGameStats, hunger: 70, happiness: 95 };
+    expect(applyGameAction(hungry, "eat")).toMatchObject({ hunger: 100, happiness: 100 });
+
+    const tired = { ...initialGameStats, energy: 80 };
+    expect(applyGameAction(tired, "sleep").energy).toBe(100);
+
+    const studying = applyGameAction(initialGameStats, "study");
+    expect(studying.experience).toBe(20);
+  });
+
+  it("decays only the visible care stats every interval", () => {
+    expect(decayStats({ hunger: 5, energy: 3, cleanliness: 2, happiness: 1, experience: 40 })).toEqual({
+      hunger: 0,
+      energy: 0,
+      cleanliness: 0,
+      happiness: 0,
+      experience: 40,
+    });
+  });
+
+  it("chooses the first low-stat mood in priority order", () => {
+    expect(moodForStats({ ...initialGameStats, hunger: 10 })).toBe("sad");
+    expect(moodForStats({ ...initialGameStats, energy: 10 })).toBe("sleepy");
+    expect(moodForStats(initialGameStats)).toBe("happy");
+  });
+});
+```
+
+- [ ] **Step 2: Run game tests to verify RED**
+
+Run: `rtk npm test -- src/lib/game.test.ts`
+
+Expected: FAIL because `src/lib/game.ts` does not exist yet.
+
+- [ ] **Step 3: Create game logic**
 
 Create `src/lib/game.ts`:
 
@@ -431,11 +486,17 @@ export function moodForStats(stats: GameStats) {
 }
 ```
 
-- [ ] **Step 2: Create ThemeShell**
+- [ ] **Step 4: Run game tests to verify GREEN**
+
+Run: `rtk npm test -- src/lib/game.test.ts`
+
+Expected: PASS.
+
+- [ ] **Step 5: Create ThemeShell**
 
 Create `src/components/ThemeShell.tsx` with nav links to `/theme/magical`, `/theme/pixel`, `/theme/scrapbook`, a `theme` class on the outer wrapper, and a consistent footer.
 
-- [ ] **Step 3: Create KuromiCareGame**
+- [ ] **Step 6: Create KuromiCareGame**
 
 Create `src/components/KuromiCareGame.tsx` using `useState`, `useEffect`, `applyGameAction`, `decayStats`, and `moodForStats`. Render:
 
@@ -447,13 +508,13 @@ Create `src/components/KuromiCareGame.tsx` using `useState`, `useEffect`, `apply
 
 Use theme classes so each route can style the same component differently.
 
-- [ ] **Step 4: Verify game compile**
+- [ ] **Step 7: Verify game compile**
 
 Run: `rtk npm run build`
 
 Expected: TypeScript accepts the game logic and components.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 8: Commit**
 
 Run:
 
@@ -471,13 +532,74 @@ rtk git commit -m "feat: add shared shell and Kuromi game"
 - Create: `src/pages/ThemePage.tsx`
 - Create: `src/pages/ThemeChooser.tsx`
 - Create: `src/pages/NotFound.tsx`
+- Create: `src/lib/routing.ts`
+- Create: `src/lib/routing.test.ts`
 - Modify: `src/App.tsx`
 
 **Interfaces:**
 - Produces: `ThemePage({ theme })`.
+- Produces: `resolveRoute(pathname: string)`.
 - Produces: client route handling for `/`, `/theme/magical`, `/theme/pixel`, `/theme/scrapbook`.
 
-- [ ] **Step 1: Create reusable sections**
+- [ ] **Step 1: Write failing route resolver tests**
+
+Create `src/lib/routing.test.ts`:
+
+```ts
+import { describe, expect, it } from "vitest";
+import { resolveRoute } from "./routing";
+
+describe("resolveRoute", () => {
+  it("recognizes the theme chooser route", () => {
+    expect(resolveRoute("/")).toEqual({ kind: "chooser" });
+  });
+
+  it("recognizes all theme routes", () => {
+    expect(resolveRoute("/theme/magical")).toEqual({ kind: "theme", theme: "magical" });
+    expect(resolveRoute("/theme/pixel")).toEqual({ kind: "theme", theme: "pixel" });
+    expect(resolveRoute("/theme/scrapbook")).toEqual({ kind: "theme", theme: "scrapbook" });
+  });
+
+  it("returns not-found for unsupported routes", () => {
+    expect(resolveRoute("/missing")).toEqual({ kind: "not-found" });
+  });
+});
+```
+
+- [ ] **Step 2: Run route tests to verify RED**
+
+Run: `rtk npm test -- src/lib/routing.test.ts`
+
+Expected: FAIL because `src/lib/routing.ts` does not exist yet.
+
+- [ ] **Step 3: Create route resolver**
+
+Create `src/lib/routing.ts`:
+
+```ts
+import type { ThemeKey } from "../data/journey";
+
+export type AppRoute =
+  | { kind: "chooser" }
+  | { kind: "theme"; theme: ThemeKey }
+  | { kind: "not-found" };
+
+export function resolveRoute(pathname: string): AppRoute {
+  if (pathname === "/" || pathname === "") return { kind: "chooser" };
+  if (pathname === "/theme/magical") return { kind: "theme", theme: "magical" };
+  if (pathname === "/theme/pixel") return { kind: "theme", theme: "pixel" };
+  if (pathname === "/theme/scrapbook") return { kind: "theme", theme: "scrapbook" };
+  return { kind: "not-found" };
+}
+```
+
+- [ ] **Step 4: Run route tests to verify GREEN**
+
+Run: `rtk npm test -- src/lib/routing.test.ts`
+
+Expected: PASS.
+
+- [ ] **Step 5: Create reusable sections**
 
 Create `src/components/sections.tsx` exporting:
 
@@ -489,7 +611,7 @@ Create `src/components/sections.tsx` exporting:
 
 Each component accepts `theme: ThemeKey`. Use shared data from `src/data/journey.ts` and assets from `src/data/assets.ts`.
 
-- [ ] **Step 2: Create ThemePage**
+- [ ] **Step 6: Create ThemePage**
 
 Create `src/pages/ThemePage.tsx`:
 
@@ -515,15 +637,15 @@ export function ThemePage({ theme }: { theme: ThemeKey }) {
 }
 ```
 
-- [ ] **Step 3: Create chooser and fallback pages**
+- [ ] **Step 7: Create chooser and fallback pages**
 
 Create `ThemeChooser` with links to all three routes and hero image preview.
 
 Create `NotFound` with links back to all three routes.
 
-- [ ] **Step 4: Replace App route handling**
+- [ ] **Step 8: Replace App route handling**
 
-Modify `src/App.tsx` to read `window.location.pathname` and render:
+Modify `src/App.tsx` to call `resolveRoute(window.location.pathname)` and render:
 
 - `/` -> `ThemeChooser`
 - `/theme/magical` -> `<ThemePage theme="magical" />`
@@ -531,7 +653,11 @@ Modify `src/App.tsx` to read `window.location.pathname` and render:
 - `/theme/scrapbook` -> `<ThemePage theme="scrapbook" />`
 - anything else -> `NotFound`
 
-- [ ] **Step 5: Verify and commit**
+- [ ] **Step 9: Verify and commit**
+
+Run: `rtk npm test`
+
+Expected: all tests pass.
 
 Run: `rtk npm run build`
 
@@ -540,7 +666,7 @@ Expected: all pages compile.
 Run:
 
 ```bash
-rtk git add src/App.tsx src/pages src/components/sections.tsx
+rtk git add src/App.tsx src/pages src/components/sections.tsx src/lib/routing.ts src/lib/routing.test.ts
 rtk git commit -m "feat: compose JourneyHil theme routes"
 ```
 
