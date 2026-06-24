@@ -1,10 +1,40 @@
 $ErrorActionPreference = "Stop"
 
-$root = Split-Path -Parent $PSScriptRoot
-$destRoot = Join-Path $root "public/assets"
-New-Item -ItemType Directory -Force -Path $destRoot | Out-Null
+function Convert-ToSlug {
+  param([string] $Value)
 
-$files = @(
+  $slug = $Value.ToLowerInvariant()
+  $slug = $slug -replace '[^a-z0-9]+', '-'
+  $slug = $slug.Trim('-')
+  if ([string]::IsNullOrWhiteSpace($slug)) {
+    return "asset"
+  }
+  return $slug
+}
+
+function Get-AssetCategory {
+  param([string] $RelativePath)
+
+  if ($RelativePath -like "aset game/*") { return "game" }
+  if ($RelativePath -like "assets 3d overlay/*") { return "overlay3d" }
+  if ($RelativePath -like "foto galeri/*") { return "gallery" }
+  if ($RelativePath -like "foto hilfia sendiri/*") { return "profile" }
+  if ($RelativePath -like "smk*" -or $RelativePath -like "universitas*") { return "place" }
+  return "misc"
+}
+
+$root = Split-Path -Parent $PSScriptRoot
+$sourceRoot = Join-Path $root "keperluan"
+$destRoot = Join-Path $root "public/assets"
+$libraryRoot = Join-Path $destRoot "library"
+$manifestPath = Join-Path $root "src/data/generatedAssets.ts"
+$mediaExtensions = @(".jpg", ".jpeg", ".png", ".webp", ".mp4")
+
+New-Item -ItemType Directory -Force -Path $destRoot | Out-Null
+New-Item -ItemType Directory -Force -Path $libraryRoot | Out-Null
+New-Item -ItemType Directory -Force -Path (Split-Path -Parent $manifestPath) | Out-Null
+
+$stableFiles = @(
   @{ Source = "keperluan/foto hilfia sendiri/hilfia keren.jpeg"; Dest = "photos/hero-hilfia-keren.jpeg" },
   @{ Source = "keperluan/foto hilfia sendiri/cutee.jpeg"; Dest = "photos/hilfia-cutee.jpeg" },
   @{ Source = "keperluan/foto hilfia sendiri/hilfia clean ( bisa jadi hero ).jpeg"; Dest = "photos/hilfia-clean.jpeg" },
@@ -23,9 +53,70 @@ $files = @(
   @{ Source = "keperluan/hiasan game.png"; Dest = "game/game-decor.png" }
 )
 
-foreach ($file in $files) {
+foreach ($file in $stableFiles) {
   $source = Join-Path $root $file.Source
+  if (-not (Test-Path -LiteralPath $source)) { continue }
   $dest = Join-Path $destRoot $file.Dest
   New-Item -ItemType Directory -Force -Path (Split-Path -Parent $dest) | Out-Null
   Copy-Item -LiteralPath $source -Destination $dest -Force
 }
+
+$manifest = New-Object System.Collections.Generic.List[object]
+$mediaFiles = Get-ChildItem -LiteralPath $sourceRoot -Recurse -File |
+  Where-Object { $mediaExtensions -contains $_.Extension.ToLowerInvariant() } |
+  Sort-Object FullName
+
+foreach ($file in $mediaFiles) {
+  $sourcePrefix = $sourceRoot.TrimEnd("\") + "\"
+  $relative = $file.FullName.Substring($sourcePrefix.Length).Replace("\", "/")
+  $category = Get-AssetCategory -RelativePath $relative
+  $baseName = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
+  $slug = Convert-ToSlug -Value $baseName
+  $folder = Join-Path $libraryRoot $category
+  $destName = "$slug$($file.Extension.ToLowerInvariant())"
+  $dest = Join-Path $folder $destName
+  $counter = 2
+
+  New-Item -ItemType Directory -Force -Path $folder | Out-Null
+
+  while (Test-Path -LiteralPath $dest) {
+    $destName = "$slug-$counter$($file.Extension.ToLowerInvariant())"
+    $dest = Join-Path $folder $destName
+    $counter++
+  }
+
+  Copy-Item -LiteralPath $file.FullName -Destination $dest -Force
+
+  $manifest.Add([ordered]@{
+    name = $baseName
+    src = "/assets/library/$category/$destName"
+    category = $category
+    kind = if ($file.Extension.ToLowerInvariant() -eq ".mp4") { "video" } else { "image" }
+    source = $relative
+  })
+}
+
+$lines = New-Object System.Collections.Generic.List[string]
+$lines.Add("export type GeneratedAsset = {")
+$lines.Add("  name: string;")
+$lines.Add("  src: string;")
+$lines.Add('  category: "game" | "overlay3d" | "gallery" | "profile" | "place" | "misc";')
+$lines.Add('  kind: "image" | "video";')
+$lines.Add("  source: string;")
+$lines.Add("};")
+$lines.Add("")
+$lines.Add("export const generatedAssets = [")
+
+foreach ($asset in $manifest) {
+  $name = ($asset.name -replace "\\", "\\") -replace '"', '\"'
+  $src = ($asset.src -replace "\\", "\\") -replace '"', '\"'
+  $category = $asset.category
+  $kind = $asset.kind
+  $source = ($asset.source -replace "\\", "\\") -replace '"', '\"'
+  $lines.Add("  { name: ""$name"", src: ""$src"", category: ""$category"", kind: ""$kind"", source: ""$source"" },")
+}
+
+$lines.Add("] as const satisfies readonly GeneratedAsset[];")
+$lines.Add("")
+
+Set-Content -LiteralPath $manifestPath -Value $lines -Encoding UTF8

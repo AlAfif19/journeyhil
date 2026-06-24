@@ -1,8 +1,8 @@
 import { Bath, Bed, Gamepad2, GraduationCap, IceCreamBowl, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { assetPaths } from "../data/assets";
+import { assetPaths, gameObjectAssets, kuromiMoodSprites } from "../data/assets";
 import { gameActions, type GameActionId, type ThemeKey } from "../data/journey";
-import { applyGameAction, decayStats, initialGameStats, moodForStats, type GameStats } from "../lib/game";
+import { applyGameAction, decayStats, initialGameStats, moodForStats, type GameMood, type GameStats } from "../lib/game";
 
 const actionIcon = {
   eat: IceCreamBowl,
@@ -20,6 +20,22 @@ const targetPosition = {
   study: "68%",
 } satisfies Record<GameActionId, string>;
 
+const actionSprite = {
+  eat: kuromiMoodSprites.eat,
+  sleep: kuromiMoodSprites.sleepy,
+  bath: kuromiMoodSprites.dirty,
+  play: kuromiMoodSprites.play,
+  study: kuromiMoodSprites.idle,
+} satisfies Record<GameActionId, string>;
+
+const moodSprite = {
+  happy: kuromiMoodSprites.happy,
+  sad: kuromiMoodSprites.sad,
+  sleepy: kuromiMoodSprites.sleepy,
+  dirty: kuromiMoodSprites.dirty,
+  angry: kuromiMoodSprites.angry,
+} satisfies Record<GameMood, string>;
+
 const statLabels: { key: keyof Omit<GameStats, "experience">; label: string }[] = [
   { key: "hunger", label: "Hunger" },
   { key: "energy", label: "Energy" },
@@ -31,6 +47,7 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
   const [stats, setStats] = useState<GameStats>(initialGameStats);
   const [activeAction, setActiveAction] = useState<GameActionId | null>(null);
   const mood = useMemo(() => moodForStats(stats), [stats]);
+  const currentSprite = activeAction ? actionSprite[activeAction] : moodSprite[mood];
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -44,6 +61,7 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
     setActiveAction(actionId);
     window.setTimeout(() => {
       setStats((current) => applyGameAction(current, actionId));
+      setActiveAction(null);
     }, 380);
   }
 
@@ -58,13 +76,22 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
         <img className="room-art" src={assetPaths.game.room} alt="" aria-hidden="true" />
         <img
           className={`kuromi-sprite mood-${mood} ${activeAction ? "is-moving" : ""}`}
-          src={theme === "pixel" ? assetPaths.game.kuromiPixel : assetPaths.game.kuromi2d}
+          src={currentSprite}
           alt={`Kuromi is ${mood}`}
           style={{ left: activeAction ? targetPosition[activeAction] : "48%" }}
         />
-        <div className="game-object object-food">Food</div>
-        <div className="game-object object-bed">Bed</div>
-        <div className="game-object object-bath">Bath</div>
+        <button className="game-object object-food" type="button" onClick={() => handleAction("eat")}>
+          <img src={assetPaths.game.strawberry} alt="" />
+          <span>Food</span>
+        </button>
+        <button className="game-object object-bed" type="button" onClick={() => handleAction("sleep")}>
+          <img src={assetPaths.game.bed} alt="" />
+          <span>Bed</span>
+        </button>
+        <button className="game-object object-bath" type="button" onClick={() => handleAction("bath")}>
+          <img src={assetPaths.game.bathtub} alt="" />
+          <span>Bath</span>
+        </button>
       </div>
 
       <div className="stat-grid" aria-label="Kuromi care stats">
@@ -101,6 +128,14 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
             </button>
           );
         })}
+      </div>
+      <div className="game-inventory" aria-label="Kuromi room object inventory">
+        {gameObjectAssets.map((asset) => (
+          <figure key={asset.src}>
+            <img src={asset.src} alt="" loading="lazy" />
+            <figcaption>{asset.name}</figcaption>
+          </figure>
+        ))}
       </div>
     </div>
   );

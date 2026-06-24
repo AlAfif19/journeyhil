@@ -1,6 +1,13 @@
-import { ArrowDown, Gamepad2, Heart, Instagram, MapPin, Sparkles, Star } from "lucide-react";
+import { ArrowDown, Gamepad2, Heart, Instagram, MapPin, Sparkles } from "lucide-react";
 import { assetPaths } from "../data/assets";
-import { galleryItems, journeyProfile, storyBeats, timelineItems, type ThemeKey } from "../data/journey";
+import {
+  galleryItems,
+  journeyProfile,
+  storyBeats,
+  themeOverlays,
+  timelineItems,
+  type ThemeKey,
+} from "../data/journey";
 
 const themeCopy: Record<ThemeKey, { label: string; storyTitle: string; timelineTitle: string }> = {
   magical: {
@@ -23,6 +30,7 @@ const themeCopy: Record<ThemeKey, { label: string; storyTitle: string; timelineT
 export function HeroSection({ theme }: { theme: ThemeKey }) {
   return (
     <section className="hero-section" id="top">
+      <DecorativeOverlays theme={theme} area="hero" />
       <div className="hero-copy">
         <span className="theme-kicker">
           <Sparkles aria-hidden="true" size={18} />
@@ -118,18 +126,25 @@ export function StorySection({ theme }: { theme: ThemeKey }) {
 
 export function TimelineSection({ theme }: { theme: ThemeKey }) {
   return (
-    <section className="section-wrap timeline-section">
+    <section className="section-wrap timeline-section" data-theme={theme}>
       <div className="section-heading">
         <span>{themeCopy[theme].timelineTitle}</span>
         <h2>From school, campus, organizations, and memories</h2>
       </div>
-      <div className="timeline-grid">
-        {timelineItems.map((item) => (
-          <article className="timeline-card" key={`${item.phase}-${item.title}`}>
-            {item.image ? <img src={item.image} alt="" loading="lazy" /> : <Star aria-hidden="true" size={24} />}
-            <span>{item.phase}</span>
-            <h3>{item.title}</h3>
-            <p>{item.detail}</p>
+      <div className="timeline-path">
+        {timelineItems.map((item, index) => (
+          <article className="timeline-event" key={`${item.phase}-${item.title}`}>
+            <div className="timeline-node">
+              <span>{index + 1}</span>
+            </div>
+            <figure>
+              <img src={item.image} alt={`Dokumentasi ${item.title}`} />
+            </figure>
+            <div className="timeline-copy">
+              <span>{item.phase}</span>
+              <h3>{item.title}</h3>
+              <p>{item.detail}</p>
+            </div>
           </article>
         ))}
       </div>
@@ -138,23 +153,52 @@ export function TimelineSection({ theme }: { theme: ThemeKey }) {
 }
 
 export function GallerySection({ theme }: { theme: ThemeKey }) {
+  const featured = galleryItems.slice(0, 12);
+  const archive = galleryItems.slice(12);
+
   return (
     <section className="section-wrap gallery-section">
+      <DecorativeOverlays theme={theme} area="gallery" />
       <div className="section-heading">
-        <span>{theme === "scrapbook" ? "Polaroid memories" : "Gallery memories"}</span>
-        <h2>Small frames from a bigger story</h2>
+        <span>{theme === "scrapbook" ? "Polaroid memories" : theme === "pixel" ? "Inventory album" : "Floating gallery"}</span>
+        <h2>All photos, activities, and saved assets in one story wall</h2>
       </div>
       <div className="gallery-grid">
-        {galleryItems.map((item) => (
-          <figure className="gallery-card" key={`${item.src}-${item.caption}`}>
-            <img src={item.src} alt={item.alt} loading="lazy" />
-            <figcaption>
-              <Heart aria-hidden="true" size={15} />
-              {item.caption}
-            </figcaption>
-          </figure>
+        {featured.map((item) => (
+          <GalleryCard item={item} key={`${item.src}-${item.caption}`} />
+        ))}
+      </div>
+      <div className="gallery-archive" aria-label="Complete photo archive">
+        {archive.map((item) => (
+          <GalleryCard item={item} compact key={`${item.src}-${item.caption}`} />
         ))}
       </div>
     </section>
+  );
+}
+
+function GalleryCard({ item, compact = false }: { item: (typeof galleryItems)[number]; compact?: boolean }) {
+  return (
+    <figure className={`gallery-card ${compact ? "gallery-card-compact" : ""}`}>
+      {item.kind === "video" ? (
+        <video src={item.src} aria-label={item.alt} muted loop playsInline preload="metadata" />
+      ) : (
+        <img src={item.src} alt={item.alt} loading={compact ? "lazy" : "eager"} />
+      )}
+      <figcaption>
+        <Heart aria-hidden="true" size={15} />
+        {item.caption}
+      </figcaption>
+    </figure>
+  );
+}
+
+function DecorativeOverlays({ theme, area }: { theme: ThemeKey; area: "hero" | "gallery" }) {
+  return (
+    <div className={`decorative-overlays decorative-overlays-${area}`} aria-hidden="true">
+      {themeOverlays[theme].map((src, index) => (
+        <img className={`overlay-asset overlay-asset-${index + 1}`} src={src} alt="" key={`${src}-${area}`} />
+      ))}
+    </div>
   );
 }
