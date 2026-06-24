@@ -64,11 +64,11 @@ export const foodItems: FoodItem[] = [
 ];
 
 export const gameStations: GameStation[] = [
-  { id: "food", label: "Food", titleAsset: "/assets/processed/game/title-food.png", position: { x: 18, y: 66 }, action: "eat" },
-  { id: "bed", label: "Bed", titleAsset: "/assets/processed/game/title-bed.png", position: { x: 22, y: 30 }, action: "sleep" },
+  { id: "food", label: "Food", titleAsset: "/assets/processed/game/title-food.png", position: { x: 23, y: 66 }, action: "eat" },
+  { id: "bed", label: "Bed", titleAsset: "/assets/processed/game/title-bed.png", position: { x: 22, y: 24 }, action: "sleep" },
   { id: "bath", label: "Bath", titleAsset: "/assets/processed/game/title-bath.png", position: { x: 72, y: 62 }, action: "bath" },
-  { id: "toy", label: "Toy", titleAsset: "/assets/processed/game/title-toy.png", position: { x: 52, y: 72 }, action: "play" },
-  { id: "study", label: "Study", titleAsset: "/assets/processed/game/title-soap.png", position: { x: 78, y: 30 }, action: "study" },
+  { id: "toy", label: "Toy", titleAsset: "/assets/processed/game/title-toy.png", position: { x: 50, y: 50 }, action: "play" },
+  { id: "study", label: "Study", titleAsset: "/assets/processed/game/title-soap.png", position: { x: 78, y: 56 }, action: "study" },
 ];
 
 export function clampStat(value: number) {

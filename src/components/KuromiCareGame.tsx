@@ -1,6 +1,6 @@
 import { Bath, Bed, Gamepad2, GraduationCap, IceCreamBowl, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { assetPaths, processedGameObjectAssets } from "../data/assets";
+import { assetPaths } from "../data/assets";
 import type { GameActionId, ThemeKey } from "../data/journey";
 import {
   applyFoodItem,
@@ -154,15 +154,6 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
             </button>
           );
         })}
-      </div>
-
-      <div className="game-inventory" aria-label="Kuromi room object inventory">
-        {processedGameObjectAssets.map((asset) => (
-          <figure key={asset.src}>
-            <img src={asset.src} alt="" loading="lazy" />
-            <figcaption>{asset.name}</figcaption>
-          </figure>
-        ))}
       </div>
     </div>
   );

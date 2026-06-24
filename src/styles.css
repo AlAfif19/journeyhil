@@ -423,11 +423,6 @@ button:focus-visible {
   font-size: 1.22rem;
 }
 
-.gallery-grid {
-  columns: 4 210px;
-  column-gap: 0.9rem;
-}
-
 .gallery-card {
   position: relative;
   display: inline-block;
@@ -817,8 +812,8 @@ button:focus-visible {
 }
 
 .gallery-section > .section-heading,
-.gallery-grid,
-.gallery-archive {
+.gallery-carousel,
+.gallery-masonry {
   position: relative;
   z-index: 1;
 }
@@ -924,84 +919,112 @@ button:focus-visible {
   line-height: 1.65;
 }
 
-.gallery-grid {
-  display: grid;
-  grid-auto-flow: dense;
-  grid-auto-rows: 92px;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: clamp(0.65rem, 1.2vw, 1rem);
-  columns: initial;
+.gallery-carousel {
+  position: relative;
+  margin-bottom: clamp(1rem, 2vw, 1.5rem);
 }
 
-.gallery-grid .gallery-card:nth-child(1),
-.gallery-grid .gallery-card:nth-child(8) {
-  grid-column: span 5;
-  grid-row: span 5;
-}
-
-.gallery-grid .gallery-card:nth-child(2),
-.gallery-grid .gallery-card:nth-child(5),
-.gallery-grid .gallery-card:nth-child(9) {
-  grid-column: span 4;
-  grid-row: span 3;
-}
-
-.gallery-grid .gallery-card:nth-child(3),
-.gallery-grid .gallery-card:nth-child(6),
-.gallery-grid .gallery-card:nth-child(10) {
-  grid-column: span 3;
-  grid-row: span 4;
-}
-
-.gallery-grid .gallery-card:nth-child(4),
-.gallery-grid .gallery-card:nth-child(7),
-.gallery-grid .gallery-card:nth-child(11),
-.gallery-grid .gallery-card:nth-child(12) {
-  grid-column: span 3;
-  grid-row: span 3;
-}
-
-.gallery-grid .gallery-card {
-  display: grid;
-  min-height: 0;
+.gallery-carousel figure {
+  position: relative;
   margin: 0;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 9%);
+  box-shadow: 0 28px 80px rgb(0 0 0 / 26%);
 }
 
-.gallery-card img,
-.gallery-card video {
+.gallery-carousel img {
   width: 100%;
-  height: 100%;
-  min-height: 210px;
+  height: clamp(430px, 54vw, 720px);
+  object-fit: cover;
+  object-position: center;
+}
+
+.gallery-carousel figcaption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: clamp(1rem, 3vw, 1.45rem);
+  background: linear-gradient(180deg, transparent, rgb(20 12 34 / 84%) 38%, rgb(20 12 34 / 94%));
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 900;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgb(255 255 255 / 24%);
+  border-radius: 999px;
+  color: var(--white);
+  background: rgb(42 27 61 / 76%);
+  box-shadow: 0 14px 34px rgb(0 0 0 / 28%);
+  cursor: pointer;
+  transform: translateY(-50%);
+  backdrop-filter: blur(14px);
+}
+
+.carousel-arrow-left {
+  left: clamp(0.7rem, 2vw, 1.25rem);
+}
+
+.carousel-arrow-right {
+  right: clamp(0.7rem, 2vw, 1.25rem);
+}
+
+.carousel-dots {
+  position: absolute;
+  right: clamp(1rem, 3vw, 1.5rem);
+  bottom: clamp(1rem, 3vw, 1.45rem);
+  z-index: 5;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.carousel-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 46%);
+}
+
+.carousel-dots span.active {
+  width: 22px;
+  background: var(--soft-blue);
+}
+
+.gallery-masonry {
+  column-count: 3;
+  column-gap: clamp(0.7rem, 1.2vw, 1rem);
+}
+
+.gallery-masonry .gallery-card {
+  display: block;
+  break-inside: avoid;
+  margin: 0 0 clamp(0.7rem, 1.2vw, 1rem);
+}
+
+.gallery-masonry .gallery-card img,
+.gallery-masonry .gallery-card video {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
   object-fit: cover;
 }
 
-.gallery-card video {
+.gallery-masonry .gallery-card video {
+  aspect-ratio: 3 / 4;
   background: var(--ink);
-}
-
-.gallery-archive {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(116px, 1fr));
-  gap: 0.65rem;
-  margin-top: 0.9rem;
-}
-
-.gallery-card-compact {
-  min-height: 150px;
-  margin: 0;
-  border-radius: 6px;
-}
-
-.gallery-card-compact img,
-.gallery-card-compact video {
-  min-height: 132px;
-  max-height: 160px;
-}
-
-.gallery-card-compact figcaption {
-  min-height: 42px;
-  padding: 0.55rem;
-  font-size: 0.74rem;
 }
 
 .game-object {
@@ -1075,45 +1098,6 @@ button:focus-visible {
   object-fit: contain;
 }
 
-.game-inventory {
-  display: grid;
-  grid-auto-columns: minmax(74px, 96px);
-  grid-auto-flow: column;
-  gap: 0.6rem;
-  margin-top: 0.9rem;
-  padding-bottom: 0.35rem;
-  overflow-x: auto;
-}
-
-.game-inventory figure {
-  display: grid;
-  place-items: center;
-  min-height: 92px;
-  margin: 0;
-  padding: 0.45rem;
-  border: 1px solid rgb(255 255 255 / 14%);
-  border-radius: 8px;
-  background: rgb(255 255 255 / 9%);
-}
-
-.game-inventory img {
-  width: 44px;
-  height: 44px;
-  object-fit: contain;
-}
-
-.game-inventory figcaption {
-  max-width: 100%;
-  margin-top: 0.3rem;
-  overflow: hidden;
-  font-size: 0.68rem;
-  font-weight: 800;
-  text-align: center;
-  text-overflow: ellipsis;
-  text-transform: capitalize;
-  white-space: nowrap;
-}
-
 .theme-magical .hero-section {
   grid-template-columns: minmax(0, 0.95fr) minmax(300px, 0.72fr);
 }
@@ -1122,8 +1106,8 @@ button:focus-visible {
 .theme-magical .hero-photo-frame,
 .theme-magical .section-heading,
 .theme-magical .timeline-path,
-.theme-magical .gallery-grid,
-.theme-magical .gallery-archive,
+.theme-magical .gallery-carousel,
+.theme-magical .gallery-masonry,
 .theme-magical .kuromi-game {
   position: relative;
   z-index: 10;
@@ -1134,27 +1118,27 @@ button:focus-visible {
 }
 
 .theme-magical .overlay-asset {
-  z-index: 8;
+  z-index: 80;
   max-width: 18vw;
   pointer-events: none;
 }
 
 .theme-magical .overlay-asset-1 {
-  top: 18px;
-  right: -46px;
+  top: -92px;
+  right: -62px;
   width: clamp(118px, 12vw, 210px);
 }
 
 .theme-magical .overlay-asset-2 {
-  top: 72px;
-  left: -50px;
+  top: -96px;
+  left: -86px;
   width: clamp(104px, 11vw, 184px);
 }
 
 .theme-magical .overlay-asset-3 {
   top: auto;
-  right: -84px;
-  bottom: 18%;
+  right: -96px;
+  bottom: 8%;
   width: clamp(140px, 13vw, 230px);
 }
 
@@ -1512,13 +1496,17 @@ button:focus-visible {
     height: auto;
   }
 
-  .gallery-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .gallery-carousel img {
+    height: 360px;
   }
 
-  .gallery-grid .gallery-card:nth-child(n) {
-    grid-column: span 1;
-    grid-row: span 1;
+  .gallery-masonry {
+    column-count: 2;
+  }
+
+  .carousel-arrow {
+    width: 40px;
+    height: 40px;
   }
 
   .stat-grid,

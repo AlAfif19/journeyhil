@@ -1,4 +1,5 @@
-import { ArrowDown, Gamepad2, Heart, Instagram, MapPin, Sparkles } from "lucide-react";
+import { ArrowDown, ChevronLeft, ChevronRight, Gamepad2, Heart, Instagram, MapPin, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
 import { assetPaths } from "../data/assets";
 import {
   galleryItems,
@@ -153,8 +154,26 @@ export function TimelineSection({ theme }: { theme: ThemeKey }) {
 }
 
 export function GallerySection({ theme }: { theme: ThemeKey }) {
-  const featured = galleryItems.slice(0, 12);
-  const archive = galleryItems.slice(12);
+  const carouselItems = galleryItems.filter((item) => item.kind === "image").slice(0, 10);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeItem = carouselItems[activeIndex] ?? galleryItems[0];
+
+  useEffect(() => {
+    if (carouselItems.length < 2) return undefined;
+    const intervalId = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % carouselItems.length);
+    }, 4_500);
+
+    return () => window.clearInterval(intervalId);
+  }, [carouselItems.length]);
+
+  function showPrevious() {
+    setActiveIndex((current) => (current - 1 + carouselItems.length) % carouselItems.length);
+  }
+
+  function showNext() {
+    setActiveIndex((current) => (current + 1) % carouselItems.length);
+  }
 
   return (
     <section className="section-wrap gallery-section" id="gallery">
@@ -163,14 +182,29 @@ export function GallerySection({ theme }: { theme: ThemeKey }) {
         <span>{theme === "scrapbook" ? "Polaroid memories" : theme === "pixel" ? "Inventory album" : "Floating gallery"}</span>
         <h2>All photos, activities, and saved assets in one story wall</h2>
       </div>
-      <div className="gallery-grid">
-        {featured.map((item) => (
-          <GalleryCard item={item} key={`${item.src}-${item.caption}`} />
-        ))}
+      <div className="gallery-carousel" aria-label="Featured photo carousel">
+        <button type="button" className="carousel-arrow carousel-arrow-left" onClick={showPrevious} aria-label="Previous photo">
+          <ChevronLeft aria-hidden="true" size={26} />
+        </button>
+        <figure>
+          <img src={activeItem.src} alt={activeItem.alt} />
+          <figcaption>
+            <Heart aria-hidden="true" size={17} />
+            {activeItem.caption}
+          </figcaption>
+        </figure>
+        <button type="button" className="carousel-arrow carousel-arrow-right" onClick={showNext} aria-label="Next photo">
+          <ChevronRight aria-hidden="true" size={26} />
+        </button>
+        <div className="carousel-dots" aria-hidden="true">
+          {carouselItems.map((item, index) => (
+            <span className={index === activeIndex ? "active" : ""} key={item.src} />
+          ))}
+        </div>
       </div>
-      <div className="gallery-archive" aria-label="Complete photo archive">
-        {archive.map((item) => (
-          <GalleryCard item={item} compact key={`${item.src}-${item.caption}`} />
+      <div className="gallery-masonry" aria-label="Complete photo archive">
+        {galleryItems.map((item) => (
+          <GalleryCard item={item} key={`${item.src}-${item.caption}`} />
         ))}
       </div>
     </section>

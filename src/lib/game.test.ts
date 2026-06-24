@@ -96,5 +96,9 @@ describe("game stat helpers", () => {
     expect(gameStations.every((station) => station.titleAsset.includes("title"))).toBe(true);
     expect(gameStations.every((station) => station.position.x >= 0 && station.position.x <= 100)).toBe(true);
     expect(gameStations.every((station) => station.position.y >= 0 && station.position.y <= 100)).toBe(true);
+    expect(gameStations.find((station) => station.id === "bed")?.position.y).toBeLessThan(30);
+    expect(gameStations.find((station) => station.id === "toy")?.position).toMatchObject({ x: 50, y: 50 });
+    expect(gameStations.find((station) => station.id === "study")?.position.y).toBeGreaterThan(50);
+    expect(gameStations.find((station) => station.id === "food")?.position.x).toBeGreaterThan(20);
   });
 });
