@@ -4,3 +4,6 @@ dist/
 .env.*
 npm-debug.log*
 *.tsbuildinfo
+vite-dev*.log
+.playwright-mcp/
+journeyhil-*.png
