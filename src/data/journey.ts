@@ -14,7 +14,7 @@ export type GalleryItem = {
   category: "profile" | "memory" | "organization" | "school";
   kind?: "image" | "video";
 };
-export type GameActionId = "eat" | "sleep" | "bath" | "play" | "study";
+export type GameActionId = "eat" | "sleep" | "bath" | "play";
 export type GameStatKey = "hunger" | "energy" | "cleanliness" | "happiness" | "experience";
 
 export const journeyProfile = {
@@ -37,45 +37,51 @@ export const storyBeats = [
 ];
 
 export const timelineItems: TimelineItem[] = [
-  { phase: "Phase 1", title: "Bandung", detail: "06 Desember 2023", image: assetPaths.photos.cutee },
   {
-    phase: "Phase 2",
+    phase: "Phase 1",
+    title: "Hilfia Kecil",
+    detail: "Awal cerita Hilfia, fase kecil yang jadi pembuka perjalanan.",
+    image: assetPaths.photos.bocil,
+  },
+  { phase: "Phase 2", title: "Bandung", detail: "06 Desember 2023", image: assetPaths.photos.cutee },
+  {
+    phase: "Phase 3",
     title: "SMK Negeri 13 Bandung",
     detail: "Jurusan Kimia Analis",
     image: assetPaths.places.smk,
   },
   {
-    phase: "Phase 3",
+    phase: "Phase 4",
     title: "Universitas Kebangsaan",
     detail: "Teknik Lingkungan",
     image: assetPaths.places.university,
   },
   {
-    phase: "Phase 4",
+    phase: "Phase 5",
     title: "Awal Dekat",
     detail: "Mentor dan anggota kelompok, sering main bersama, dan cerita lupa makan karena ngobrol terlalu lama.",
     image: assetPaths.gallery.mentorAnak,
   },
   {
-    phase: "Phase 5",
+    phase: "Phase 6",
     title: "Teater Lima Wajah",
     detail: "Anggota teater, resital, dan sekretaris dhemit.",
     image: "/assets/library/profile/hilfia-malam-foto.jpeg",
   },
-  { phase: "Phase 6", title: "BEM Aksara", detail: "Berperan sebagai humas.", image: "/assets/library/gallery/acara-bukber-kema.jpg" },
+  { phase: "Phase 7", title: "BEM Aksara", detail: "Berperan sebagai humas.", image: "/assets/library/gallery/acara-bukber-kema.jpg" },
   {
-    phase: "Phase 7",
+    phase: "Phase 8",
     title: "Asisten Lab",
     detail: "Dipercaya dosen menjadi asisten praktikum.",
     image: "/assets/library/profile/hilfia-lab.jpeg",
   },
   {
-    phase: "Phase 8",
+    phase: "Phase 9",
     title: "HMTL",
     detail: "Publikasi, dokumentasi, desain, seminar lingkungan, dan sekretaris departemen PSDA.",
     image: assetPaths.photos.hmtl,
   },
-  { phase: "Phase 9", title: "DPM", detail: "Ketua Komisi 1.", image: assetPaths.gallery.dpm },
+  { phase: "Phase 10", title: "DPM", detail: "Ketua Komisi 1.", image: assetPaths.gallery.dpm },
 ];
 
 function makeCaption(name: string) {
@@ -111,7 +117,6 @@ export const gameActions = [
   { id: "sleep", label: "Sleep", stat: "energy", amount: 35 },
   { id: "bath", label: "Bath", stat: "cleanliness", amount: 50 },
   { id: "play", label: "Play", stat: "happiness", amount: 30 },
-  { id: "study", label: "Study", stat: "experience", amount: 20 },
 ] as const satisfies readonly {
   id: GameActionId;
   label: string;

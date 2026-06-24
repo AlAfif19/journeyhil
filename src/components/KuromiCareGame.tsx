@@ -1,7 +1,7 @@
-import { Bath, Bed, Gamepad2, GraduationCap, IceCreamBowl, Sparkles } from "lucide-react";
+import { Bath, Bed, Gamepad2, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { assetPaths } from "../data/assets";
-import type { GameActionId, ThemeKey } from "../data/journey";
+import type { ThemeKey } from "../data/journey";
 import {
   applyFoodItem,
   applyStationAction,
@@ -12,17 +12,16 @@ import {
   moodForStats,
   resolveKuromiSprite,
   type FoodItemId,
+  type GameStationActionId,
   type GameStationId,
   type GameStats,
 } from "../lib/game";
 
 const actionIcon = {
-  eat: IceCreamBowl,
   sleep: Bed,
   bath: Bath,
   play: Gamepad2,
-  study: GraduationCap,
-} satisfies Record<GameActionId, typeof Sparkles>;
+} satisfies Record<GameStationActionId, typeof Sparkles>;
 
 const statLabels: { key: keyof Omit<GameStats, "experience">; label: string }[] = [
   { key: "hunger", label: "Hunger" },
@@ -32,17 +31,15 @@ const statLabels: { key: keyof Omit<GameStats, "experience">; label: string }[] 
 ];
 
 const stationByAction = {
-  eat: "food",
   sleep: "bed",
   bath: "bath",
   play: "toy",
-  study: "study",
-} satisfies Record<GameActionId, GameStationId>;
+} satisfies Record<GameStationActionId, GameStationId>;
 
 export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
   const [state, setState] = useState(initialGameState);
-  const activeStation = useMemo(
-    () => gameStations.find((station) => station.id === state.activeStation) ?? gameStations[0],
+  const spritePosition = useMemo(
+    () => gameStations.find((station) => station.id === state.activeStation)?.position ?? { x: 50, y: 54 },
     [state.activeStation],
   );
   const currentSprite = resolveKuromiSprite(state);
@@ -79,7 +76,7 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
     clearActionSoon();
   }
 
-  function handleAction(actionId: GameActionId) {
+  function handleAction(actionId: GameStationActionId) {
     handleStation(stationByAction[actionId]);
   }
 
@@ -96,7 +93,7 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
           className={`kuromi-sprite mood-${state.mood} ${state.activeAction ? "is-moving" : ""}`}
           src={currentSprite}
           alt={`Kuromi is ${state.mood}`}
-          style={{ left: `${activeStation.position.x}%`, bottom: `${100 - activeStation.position.y}%` }}
+          style={{ left: `${spritePosition.x}%`, bottom: `${100 - spritePosition.y}%` }}
         />
         {gameStations.map((station) => (
           <button
@@ -130,13 +127,6 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
             <strong>{state.stats[stat.key]}</strong>
           </div>
         ))}
-        <div className="stat-row stat-experience">
-          <span>Experience</span>
-          <div className="stat-track" aria-hidden="true">
-            <span style={{ width: `${state.stats.experience}%` }} />
-          </div>
-          <strong>{state.stats.experience}</strong>
-        </div>
       </div>
 
       <div className="action-grid">

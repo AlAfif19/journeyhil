@@ -18,17 +18,11 @@ describe("game stat helpers", () => {
   });
 
   it("applies Kuromi care actions and keeps values in range", () => {
-    const hungry = { ...initialGameStats, hunger: 70, happiness: 95 };
-    expect(applyStationAction({ stats: hungry, mood: "happy", activeAction: null, activeStation: null }, "food").stats).toMatchObject({
-      hunger: 100,
-      happiness: 100,
-    });
-
     const tired = { ...initialGameStats, energy: 80 };
     expect(applyStationAction({ stats: tired, mood: "happy", activeAction: null, activeStation: null }, "bed").stats.energy).toBe(100);
 
-    const studying = applyStationAction({ stats: initialGameStats, mood: "happy", activeAction: null, activeStation: null }, "study");
-    expect(studying.stats.experience).toBe(20);
+    const playful = applyStationAction({ stats: initialGameStats, mood: "happy", activeAction: null, activeStation: null }, "toy");
+    expect(playful.stats.happiness).toBe(100);
   });
 
   it("decays only the visible care stats every interval", () => {
@@ -92,13 +86,12 @@ describe("game stat helpers", () => {
   });
 
   it("defines station title assets and map positions", () => {
-    expect(gameStations).toHaveLength(5);
+    expect(gameStations).toHaveLength(3);
+    expect(gameStations.map((station) => station.id)).toEqual(["bed", "bath", "toy"]);
     expect(gameStations.every((station) => station.titleAsset.includes("title"))).toBe(true);
     expect(gameStations.every((station) => station.position.x >= 0 && station.position.x <= 100)).toBe(true);
     expect(gameStations.every((station) => station.position.y >= 0 && station.position.y <= 100)).toBe(true);
     expect(gameStations.find((station) => station.id === "bed")?.position.y).toBeLessThan(30);
-    expect(gameStations.find((station) => station.id === "toy")?.position).toMatchObject({ x: 50, y: 50 });
-    expect(gameStations.find((station) => station.id === "study")?.position.y).toBeGreaterThan(50);
-    expect(gameStations.find((station) => station.id === "food")?.position.x).toBeGreaterThan(20);
+    expect(gameStations.find((station) => station.id === "toy")?.position).toMatchObject({ x: 50, y: 36 });
   });
 });

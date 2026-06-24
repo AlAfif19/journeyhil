@@ -10,7 +10,8 @@ export type GameStats = {
 };
 
 export type GameMood = "happy" | "sad" | "sleepy" | "dirty" | "angry";
-export type GameStationId = "food" | "bed" | "bath" | "toy" | "study";
+export type GameStationId = "bed" | "bath" | "toy";
+export type GameStationActionId = Exclude<GameActionId, "eat">;
 export type FoodItemId = "strawberry" | "iceCream" | "cake" | "milk" | "pudding" | "donut" | "cookies" | "drink";
 
 export type GameState = {
@@ -34,7 +35,7 @@ export type GameStation = {
   label: string;
   titleAsset: string;
   position: { x: number; y: number };
-  action: GameActionId;
+  action: GameStationActionId;
 };
 
 export const initialGameStats: GameStats = {
@@ -64,11 +65,9 @@ export const foodItems: FoodItem[] = [
 ];
 
 export const gameStations: GameStation[] = [
-  { id: "food", label: "Food", titleAsset: "/assets/processed/game/title-food.png", position: { x: 23, y: 66 }, action: "eat" },
   { id: "bed", label: "Bed", titleAsset: "/assets/processed/game/title-bed.png", position: { x: 22, y: 24 }, action: "sleep" },
   { id: "bath", label: "Bath", titleAsset: "/assets/processed/game/title-bath.png", position: { x: 72, y: 62 }, action: "bath" },
-  { id: "toy", label: "Toy", titleAsset: "/assets/processed/game/title-toy.png", position: { x: 50, y: 50 }, action: "play" },
-  { id: "study", label: "Study", titleAsset: "/assets/processed/game/title-soap.png", position: { x: 78, y: 56 }, action: "study" },
+  { id: "toy", label: "Toy", titleAsset: "/assets/processed/game/title-toy.png", position: { x: 50, y: 36 }, action: "play" },
 ];
 
 export function clampStat(value: number) {
@@ -116,19 +115,11 @@ export function applyFoodItem(state: GameState, foodId: FoodItemId): GameState {
   return updateMood({
     stats: applyEffects(state.stats, food.effect),
     activeAction: "eat",
-    activeStation: "food",
+    activeStation: null,
   });
 }
 
 export function applyStationAction(state: GameState, stationId: GameStationId): GameState {
-  if (stationId === "food") {
-    return updateMood({
-      stats: applyEffects(state.stats, { hunger: 40, happiness: 10 }),
-      activeAction: "eat",
-      activeStation: "food",
-    });
-  }
-
   if (stationId === "bed") {
     return updateMood({
       stats: applyEffects(state.stats, { energy: 35, happiness: 4 }),
@@ -153,11 +144,7 @@ export function applyStationAction(state: GameState, stationId: GameStationId): 
     });
   }
 
-  return updateMood({
-    stats: applyEffects(state.stats, { experience: 20, energy: -3 }),
-    activeAction: "study",
-    activeStation: "study",
-  });
+  return state;
 }
 
 export function resolveKuromiSprite(state: Pick<GameState, "mood" | "activeAction">) {

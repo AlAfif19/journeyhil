@@ -35,6 +35,7 @@ export const assetPaths = {
     cutee: "/assets/photos/hilfia-cutee.jpeg",
     clean: "/assets/photos/hilfia-clean.jpeg",
     hmtl: "/assets/photos/hilfia-hmtl.jpeg",
+    bocil: findAsset("hilfia bocil", "profile"),
   },
   gallery: {
     mentorAnak: "/assets/gallery/mentor-anak.jpg",
@@ -80,6 +81,8 @@ export const overlayAssets = {
     findProcessedAsset("claud aset", "overlay3d"),
     findProcessedAsset("love aset", "overlay3d"),
     findProcessedAsset("ribbon aset", "overlay3d"),
+    findProcessedAsset("kuromi 2d idle", "overlay3d"),
+    findProcessedAsset("kuromi 2d happy", "overlay3d"),
   ],
   pixel: [
     findProcessedAsset("kuromi 3d play", "overlay3d"),
