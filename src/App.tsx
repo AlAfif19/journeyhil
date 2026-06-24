@@ -1,7 +1,12 @@
+import { resolveRoute } from "./lib/routing";
+import { NotFound } from "./pages/NotFound";
+import { ThemeChooser } from "./pages/ThemeChooser";
+import { ThemePage } from "./pages/ThemePage";
+
 export default function App() {
-  return (
-    <main className="min-h-screen bg-[#2A1B3D] text-white">
-      <h1>JourneyHil</h1>
-    </main>
-  );
+  const route = resolveRoute(window.location.pathname);
+
+  if (route.kind === "chooser") return <ThemeChooser />;
+  if (route.kind === "theme") return <ThemePage theme={route.theme} />;
+  return <NotFound />;
 }
