@@ -2055,12 +2055,33 @@ button:focus-visible {
     opacity: 0.78;
   }
 
+  .theme-magical .kuromi-game .kuromi-sprite {
+    width: clamp(48px, 13vw, 70px) !important;
+  }
+
+  .theme-magical .kuromi-game .kuromi-sprite.is-walking {
+    width: clamp(38px, 10vw, 56px) !important;
+  }
+
+  .theme-magical .kuromi-game .kuromi-sprite.action-eat.phase-acting {
+    width: clamp(44px, 12vw, 64px) !important;
+  }
+
+  .theme-magical .kuromi-game .kuromi-sprite.action-bath.phase-acting {
+    width: clamp(52px, 14vw, 74px) !important;
+  }
+
+  .theme-magical .kuromi-game .kuromi-sprite.action-play.phase-acting,
+  .theme-magical .kuromi-game .kuromi-sprite.action-sleep.phase-acting {
+    width: clamp(50px, 13vw, 70px) !important;
+  }
+
   .theme-magical .kuromi-game .station-title.station-bed {
-    left: 24% !important;
+    left: 22% !important;
   }
 
   .theme-magical .kuromi-game .kuromi-sprite.action-sleep.phase-acting {
-    left: 24% !important;
+    left: 22% !important;
   }
 
   .theme-magical .timeline-section .timeline-path {
