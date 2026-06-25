@@ -2045,6 +2045,24 @@ button:focus-visible {
 }
 
 @media (max-width: 860px) {
+  .theme-magical .kuromi-game .game-stage {
+    aspect-ratio: 4 / 3;
+    min-height: auto;
+  }
+
+  .theme-magical .kuromi-game .room-art {
+    object-fit: contain;
+    opacity: 0.78;
+  }
+
+  .theme-magical .kuromi-game .station-title.station-bed {
+    left: 24% !important;
+  }
+
+  .theme-magical .kuromi-game .kuromi-sprite.action-sleep.phase-acting {
+    left: 24% !important;
+  }
+
   .theme-magical .timeline-section .timeline-path {
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) !important;

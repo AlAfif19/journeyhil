@@ -19,7 +19,7 @@ export type GameStatKey = "hunger" | "energy" | "cleanliness" | "happiness" | "e
 
 export const journeyProfile = {
   name: "Hilfia Qisthi Amalia",
-  birthDate: "06 Desember 2023",
+  birthDate: "06 Desember 2003",
   city: "Bandung",
   favorites: ["Strawberry", "Sale Pisang", "Ice Cream"],
   favoriteGame: "Mobile Legends",
