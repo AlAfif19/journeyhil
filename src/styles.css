@@ -2001,10 +2001,13 @@ button:focus-visible {
   }
 
   .music-player {
-    right: 10px;
-    left: 10px;
+    right: auto;
+    left: 50%;
     bottom: 10px;
+    width: min(420px, calc(100vw - 20px));
+    max-width: calc(100vw - 20px);
     justify-content: center;
+    transform: translateX(-50%);
   }
 
   .music-player span {
