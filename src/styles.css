@@ -512,6 +512,10 @@ button:focus-visible {
   transform: translateX(-50%) translateY(-8px) rotate(-2deg);
 }
 
+.kuromi-sprite.is-walking {
+  width: clamp(70px, 11vw, 122px);
+}
+
 .kuromi-sprite.mood-sad,
 .kuromi-sprite.mood-sleepy {
   filter: grayscale(0.3) drop-shadow(0 14px 18px rgb(0 0 0 / 35%));
@@ -926,6 +930,10 @@ button:focus-visible {
   width: 100%;
   height: clamp(190px, 24vw, 310px);
   object-fit: cover;
+}
+
+.timeline-event-2 figure img {
+  object-position: center 68%;
 }
 
 .timeline-copy {
@@ -1371,6 +1379,10 @@ button:focus-visible {
 
   .theme-magical .kuromi-sprite {
     width: clamp(96px, 8vw, 142px);
+  }
+
+  .theme-magical .kuromi-sprite.is-walking {
+    width: clamp(78px, 6.6vw, 116px);
   }
 
   .theme-magical .station-title {

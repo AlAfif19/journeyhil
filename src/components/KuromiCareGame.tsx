@@ -138,7 +138,7 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
       <div className="game-stage" aria-label="Kuromi room game area">
         <img className="room-art" src={assetPaths.game.room} alt="" aria-hidden="true" />
         <img
-          className={`kuromi-sprite mood-${state.mood} ${state.activeAction ? "is-moving" : ""}`}
+          className={`kuromi-sprite mood-${state.mood} ${state.activeAction ? "is-moving" : ""} ${motionPhase === "walking" ? "is-walking" : ""}`}
           src={currentSprite}
           alt={`Kuromi is ${state.mood}`}
           style={{ left: `${spritePosition.x}%`, bottom: `${100 - spritePosition.y}%` }}

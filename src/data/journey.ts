@@ -66,9 +66,14 @@ export const timelineItems: TimelineItem[] = [
     phase: "Phase 6",
     title: "Teater Lima Wajah",
     detail: "Anggota teater, resital, dan sekretaris dhemit.",
-    image: "/assets/library/profile/hilfia-malam-foto.jpeg",
+    image: "/assets/library/gallery/open-house-tlw.jpg",
   },
-  { phase: "Phase 7", title: "BEM Aksara", detail: "Berperan sebagai humas.", image: "/assets/library/gallery/acara-bukber-kema.jpg" },
+  {
+    phase: "Phase 7",
+    title: "Kegiatan Kepanitiaan dan Organisasi",
+    detail: "Aktif dalam kepanitiaan dan kegiatan organisasi kampus.",
+    image: "/assets/library/profile/panitia-ombak.jpeg",
+  },
   {
     phase: "Phase 8",
     title: "Asisten Lab",
@@ -79,7 +84,7 @@ export const timelineItems: TimelineItem[] = [
     phase: "Phase 9",
     title: "HMTL",
     detail: "Publikasi, dokumentasi, desain, seminar lingkungan, dan sekretaris departemen PSDA.",
-    image: assetPaths.photos.hmtl,
+    image: "/assets/library/profile/hilfia-pengenalan-ring-1.jpeg",
   },
   { phase: "Phase 10", title: "DPM", detail: "Ketua Komisi 1.", image: assetPaths.gallery.dpm },
 ];

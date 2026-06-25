@@ -134,7 +134,7 @@ export function TimelineSection({ theme }: { theme: ThemeKey }) {
       </div>
       <div className="timeline-path">
         {timelineItems.map((item, index) => (
-          <article className="timeline-event" key={`${item.phase}-${item.title}`}>
+          <article className={`timeline-event timeline-event-${index + 1}`} key={`${item.phase}-${item.title}`}>
             <div className="timeline-node">
               <span>{index + 1}</span>
             </div>
