@@ -42,11 +42,11 @@ export function HeroSection({ theme }: { theme: ThemeKey }) {
         <div className="hero-actions">
           <a href="#journey">
             <ArrowDown aria-hidden="true" size={18} />
-            Explore Journey
+            Explore journey
           </a>
           <a href="#game">
             <Gamepad2 aria-hidden="true" size={18} />
-            Play Kuromi Game
+            Play Kuromi game
           </a>
         </div>
       </div>
@@ -138,7 +138,7 @@ export function TimelineSection({ theme }: { theme: ThemeKey }) {
             <div className="timeline-node">
               <span>{index + 1}</span>
             </div>
-            <figure>
+            <figure className={`timeline-media timeline-media-${index + 1}`}>
               <img src={item.image} alt={`Dokumentasi ${item.title}`} />
             </figure>
             <div className="timeline-copy">
