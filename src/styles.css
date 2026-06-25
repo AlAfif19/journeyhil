@@ -1850,6 +1850,12 @@ button:focus-visible {
     transform: none;
   }
 
+  .theme-magical .timeline-path,
+  .timeline-path {
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
   .timeline-event,
   .timeline-event:nth-child(even),
   .theme-pixel .timeline-event,
@@ -1857,7 +1863,10 @@ button:focus-visible {
   .theme-scrapbook .timeline-event:nth-child(even) {
     grid-template-columns: minmax(0, 1fr);
     gap: 0.55rem;
+    width: 100%;
+    min-width: 0;
     padding-left: 0;
+    justify-items: stretch;
   }
 
   .timeline-node,
@@ -1880,7 +1889,9 @@ button:focus-visible {
     grid-column: 1;
     grid-row: 1;
     width: 100%;
+    max-width: none;
     height: 260px;
+    justify-self: stretch;
   }
 
   .timeline-copy,
@@ -1893,7 +1904,9 @@ button:focus-visible {
     grid-row: 2;
     text-align: left;
     width: 100%;
+    max-width: none;
     min-height: 150px;
+    justify-self: stretch;
   }
 
   .timeline-event::before {
@@ -1901,7 +1914,26 @@ button:focus-visible {
   }
 
   .timeline-event figure img {
+    width: 100%;
+    min-width: 100%;
     height: 100%;
+    object-fit: cover;
+  }
+
+  .theme-magical .timeline-event figure,
+  .theme-magical .timeline-event:nth-child(even) figure,
+  .theme-magical .timeline-copy,
+  .theme-magical .timeline-event:nth-child(even) .timeline-copy {
+    width: 100%;
+    max-width: none;
+  }
+
+  .theme-magical .timeline-event figure img {
+    display: block;
+    width: 100% !important;
+    min-width: 100%;
+    height: 100% !important;
+    object-fit: cover;
   }
 
   .theme-pixel .timeline-path {
