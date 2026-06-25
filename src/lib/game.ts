@@ -70,8 +70,8 @@ export const gameStations: GameStation[] = [
     id: "bed",
     label: "Bed",
     titleAsset: "/assets/processed/game/title-bed.png",
-    position: { x: 27, y: 29 },
-    spritePosition: { x: 27, y: 49 },
+    position: { x: 31, y: 29 },
+    spritePosition: { x: 31, y: 49 },
     action: "sleep",
   },
   {
