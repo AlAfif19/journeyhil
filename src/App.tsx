@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { resolveRoute } from "./lib/routing";
 import { NotFound } from "./pages/NotFound";
-import { ThemeChooser } from "./pages/ThemeChooser";
 import { ThemePage } from "./pages/ThemePage";
 
 export default function App() {
@@ -22,7 +21,6 @@ export default function App() {
     };
   }, []);
 
-  if (route.kind === "chooser") return <ThemeChooser />;
   if (route.kind === "theme") return <ThemePage theme={route.theme} />;
   return <NotFound />;
 }

@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { resolveRoute } from "./routing";
 
 describe("resolveRoute", () => {
-  it("recognizes the theme chooser route", () => {
-    expect(resolveRoute("/")).toEqual({ kind: "chooser" });
+  it("opens Magical as the default route", () => {
+    expect(resolveRoute("/")).toEqual({ kind: "theme", theme: "magical" });
   });
 
   it("recognizes all theme routes", () => {
