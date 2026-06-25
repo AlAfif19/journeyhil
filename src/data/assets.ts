@@ -83,6 +83,10 @@ export const overlayAssets = {
     findProcessedAsset("ribbon aset", "overlay3d"),
     findProcessedAsset("kuromi 2d idle", "overlay3d"),
     findProcessedAsset("kuromi 2d happy", "overlay3d"),
+    findProcessedAsset("kuromi 2d angry", "overlay3d"),
+    findProcessedAsset("kuromi 2d play", "overlay3d"),
+    findProcessedAsset("kuromi 2d sit", "overlay3d"),
+    findProcessedAsset("kuromi 2d sleep", "overlay3d"),
   ],
   pixel: [
     findProcessedAsset("kuromi 3d play", "overlay3d"),

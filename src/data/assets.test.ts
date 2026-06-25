@@ -37,8 +37,16 @@ describe("asset coverage", () => {
   });
 
   it("uses processed ornaments and Kuromi 2D assets for Magical section overlays", () => {
-    expect(overlayAssets.magical.length).toBeGreaterThanOrEqual(7);
+    expect(overlayAssets.magical.length).toBeGreaterThanOrEqual(11);
     expect(overlayAssets.magical.every((asset) => asset.includes("/assets/processed/overlay3d/"))).toBe(true);
     expect(overlayAssets.magical.some((asset) => asset.includes("kuromi-2d"))).toBe(true);
+    expect(overlayAssets.magical).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("kuromi-2d-angry"),
+        expect.stringContaining("kuromi-2d-play"),
+        expect.stringContaining("kuromi-2d-sit"),
+        expect.stringContaining("kuromi-2d-sleep"),
+      ]),
+    );
   });
 });

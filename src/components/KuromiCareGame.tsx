@@ -39,7 +39,7 @@ const stationByAction = {
 export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
   const [state, setState] = useState(initialGameState);
   const spritePosition = useMemo(
-    () => gameStations.find((station) => station.id === state.activeStation)?.position ?? { x: 50, y: 54 },
+    () => gameStations.find((station) => station.id === state.activeStation)?.spritePosition ?? { x: 50, y: 54 },
     [state.activeStation],
   );
   const currentSprite = resolveKuromiSprite(state);

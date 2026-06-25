@@ -35,6 +35,7 @@ export type GameStation = {
   label: string;
   titleAsset: string;
   position: { x: number; y: number };
+  spritePosition: { x: number; y: number };
   action: GameStationActionId;
 };
 
@@ -65,9 +66,30 @@ export const foodItems: FoodItem[] = [
 ];
 
 export const gameStations: GameStation[] = [
-  { id: "bed", label: "Bed", titleAsset: "/assets/processed/game/title-bed.png", position: { x: 22, y: 24 }, action: "sleep" },
-  { id: "bath", label: "Bath", titleAsset: "/assets/processed/game/title-bath.png", position: { x: 72, y: 62 }, action: "bath" },
-  { id: "toy", label: "Toy", titleAsset: "/assets/processed/game/title-toy.png", position: { x: 50, y: 36 }, action: "play" },
+  {
+    id: "bed",
+    label: "Bed",
+    titleAsset: "/assets/processed/game/title-bed.png",
+    position: { x: 27, y: 25 },
+    spritePosition: { x: 29, y: 43 },
+    action: "sleep",
+  },
+  {
+    id: "bath",
+    label: "Bath",
+    titleAsset: "/assets/processed/game/title-bath.png",
+    position: { x: 72, y: 70 },
+    spritePosition: { x: 72, y: 84 },
+    action: "bath",
+  },
+  {
+    id: "toy",
+    label: "Toy",
+    titleAsset: "/assets/processed/game/title-toy.png",
+    position: { x: 24, y: 76 },
+    spritePosition: { x: 25, y: 88 },
+    action: "play",
+  },
 ];
 
 export function clampStat(value: number) {

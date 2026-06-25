@@ -1,4 +1,5 @@
 import { ArrowDown, Gamepad2, Heart, Instagram, MapPin, Sparkles } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { assetPaths } from "../data/assets";
 import {
   galleryItems,
@@ -153,6 +154,33 @@ export function TimelineSection({ theme }: { theme: ThemeKey }) {
 }
 
 export function GallerySection({ theme }: { theme: ThemeKey }) {
+  const scrollboxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const scrollbox = scrollboxRef.current;
+    if (!scrollbox || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+
+    let frameId = 0;
+    let lastTime = performance.now();
+
+    function tick(time: number) {
+      if (!scrollbox) return;
+      const elapsed = time - lastTime;
+      lastTime = time;
+      scrollbox.scrollTop += elapsed * 0.018;
+
+      if (scrollbox.scrollTop >= scrollbox.scrollHeight / 2) {
+        scrollbox.scrollTop = 0;
+      }
+
+      frameId = window.requestAnimationFrame(tick);
+    }
+
+    frameId = window.requestAnimationFrame(tick);
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, []);
+
   return (
     <section className="section-wrap gallery-section" id="gallery">
       <DecorativeOverlays theme={theme} area="gallery" />
@@ -160,7 +188,7 @@ export function GallerySection({ theme }: { theme: ThemeKey }) {
         <span>{theme === "scrapbook" ? "Polaroid memories" : theme === "pixel" ? "Inventory album" : "Floating gallery"}</span>
         <h2>All photos, activities, and saved assets in one story wall</h2>
       </div>
-      <div className="gallery-scrollbox" aria-label="Complete photo archive">
+      <div className="gallery-scrollbox" aria-label="Complete photo archive" ref={scrollboxRef}>
         <div className="gallery-masonry">
           {[...galleryItems, ...galleryItems.slice(0, 12)].map((item, index) => (
             <GalleryCard item={item} key={`${item.src}-${item.caption}-${index}`} />
