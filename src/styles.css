@@ -502,7 +502,7 @@ button:focus-visible {
   position: absolute;
   z-index: 4;
   bottom: 14%;
-  width: clamp(88px, 16vw, 160px);
+  width: clamp(78px, 13vw, 138px);
   transform: translateX(-50%);
   transition: left 520ms ease, bottom 520ms ease, transform 220ms ease, filter 220ms ease;
   filter: drop-shadow(0 14px 18px rgb(0 0 0 / 35%));
@@ -581,8 +581,10 @@ button:focus-visible {
 
 .action-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
   gap: 0.6rem;
+  width: min(100%, 720px);
+  margin-inline: auto;
 }
 
 .action-grid button {
@@ -851,14 +853,30 @@ button:focus-visible {
   align-items: center;
 }
 
+.timeline-event::before {
+  position: absolute;
+  top: 50%;
+  right: 16%;
+  left: 16%;
+  z-index: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgb(160 210 235 / 52%) 18%, rgb(244 154 194 / 58%) 50%, rgb(160 210 235 / 52%) 82%, transparent);
+  transform: translateY(-50%);
+  content: "";
+}
+
 .timeline-event figure {
   grid-column: 1;
   grid-row: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .timeline-event .timeline-copy {
   grid-column: 3;
   grid-row: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .timeline-event:nth-child(even) figure {
@@ -1188,10 +1206,38 @@ button:focus-visible {
   display: block;
 }
 
+.theme-magical .decorative-overlays-hero .overlay-asset:nth-child(n + 5) {
+  display: none;
+}
+
 .theme-magical .overlay-asset {
   z-index: 80;
   max-width: 16vw;
   pointer-events: none;
+}
+
+.theme-magical .decorative-overlays-hero .overlay-asset-1 {
+  top: -112px;
+  right: -96px;
+  width: clamp(92px, 8vw, 142px);
+}
+
+.theme-magical .decorative-overlays-hero .overlay-asset-2 {
+  top: 18%;
+  left: -86px;
+  width: clamp(82px, 7.5vw, 130px);
+}
+
+.theme-magical .decorative-overlays-hero .overlay-asset-3 {
+  right: -98px;
+  bottom: 22%;
+  width: clamp(96px, 8vw, 146px);
+}
+
+.theme-magical .decorative-overlays-hero .overlay-asset-4 {
+  bottom: -34px;
+  left: -62px;
+  width: clamp(94px, 8.5vw, 148px);
 }
 
 .theme-magical .overlay-asset-1 {
@@ -1323,7 +1369,7 @@ button:focus-visible {
   }
 
   .theme-magical .kuromi-sprite {
-    width: clamp(112px, 10vw, 176px);
+    width: clamp(96px, 8vw, 142px);
   }
 
   .theme-magical .station-title {

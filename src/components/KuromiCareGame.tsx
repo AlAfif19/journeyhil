@@ -1,5 +1,5 @@
 import { Bath, Bed, Gamepad2, Sparkles } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { assetPaths } from "../data/assets";
 import type { ThemeKey } from "../data/journey";
 import {
@@ -38,6 +38,7 @@ const stationByAction = {
 
 export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
   const [state, setState] = useState(initialGameState);
+  const actionTimers = useRef<number[]>([]);
   const spritePosition = useMemo(
     () => gameStations.find((station) => station.id === state.activeStation)?.spritePosition ?? { x: 50, y: 54 },
     [state.activeStation],
@@ -52,28 +53,54 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
       });
     }, 30_000);
 
-    return () => window.clearInterval(intervalId);
+    return () => {
+      window.clearInterval(intervalId);
+      actionTimers.current.forEach((timerId) => window.clearTimeout(timerId));
+    };
   }, []);
 
-  function clearActionSoon() {
-    window.setTimeout(() => {
+  function clearActionTimers() {
+    actionTimers.current.forEach((timerId) => window.clearTimeout(timerId));
+    actionTimers.current = [];
+  }
+
+  function queueActionTimers(applyAction: () => void) {
+    clearActionTimers();
+    const applyTimer = window.setTimeout(applyAction, 2_200);
+    const clearTimer = window.setTimeout(() => {
       setState((current) => ({
         ...current,
         activeAction: null,
         activeStation: null,
         mood: moodForStats(current.stats),
       }));
-    }, 580);
+    }, 3_900);
+    actionTimers.current = [applyTimer, clearTimer];
   }
 
   function handleStation(stationId: GameStationId) {
-    setState((current) => applyStationAction(current, stationId));
-    clearActionSoon();
+    const station = gameStations.find((item) => item.id === stationId);
+    if (!station) return;
+
+    setState((current) => ({
+      ...current,
+      activeAction: station.action,
+      activeStation: stationId,
+    }));
+    queueActionTimers(() => {
+      setState((current) => applyStationAction(current, stationId));
+    });
   }
 
   function handleFood(foodId: FoodItemId) {
-    setState((current) => applyFoodItem(current, foodId));
-    clearActionSoon();
+    setState((current) => ({
+      ...current,
+      activeAction: "eat",
+      activeStation: null,
+    }));
+    queueActionTimers(() => {
+      setState((current) => applyFoodItem(current, foodId));
+    });
   }
 
   function handleAction(actionId: GameStationActionId) {

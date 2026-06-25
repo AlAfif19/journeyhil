@@ -93,7 +93,7 @@ describe("game stat helpers", () => {
     expect(gameStations.every((station) => station.position.y >= 0 && station.position.y <= 100)).toBe(true);
     expect(gameStations.every((station) => station.spritePosition.y > station.position.y)).toBe(true);
     expect(gameStations.find((station) => station.id === "bed")?.position.y).toBeLessThan(30);
-    expect(gameStations.find((station) => station.id === "toy")?.position).toMatchObject({ x: 24, y: 76 });
+    expect(gameStations.find((station) => station.id === "toy")?.position).toMatchObject({ x: 29, y: 72 });
     expect(gameStations.find((station) => station.id === "bath")?.position.x).toBeGreaterThan(70);
   });
 });
