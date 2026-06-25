@@ -54,6 +54,7 @@ export const assetPaths = {
     kuromi2d: findProcessedAsset("kuromi 2d idle", "overlay3d"),
     kuromiRunLeft: "/assets/processed/game/kuromi-run-left.gif",
     kuromiRunRight: "/assets/processed/game/kuromi-run-right.gif",
+    kuromiBath: "/assets/processed/game/pixel-kuromi-mandi.png",
     assets: "/assets/game/game-assets.png",
     decor: "/assets/game/game-decor.png",
     bed: findProcessedAsset("bed", "game"),
@@ -73,6 +74,7 @@ export const kuromiMoodSprites = {
   angry: findProcessedAsset("kuromi 2d angry", "overlay3d"),
   idle: findProcessedAsset("pixel kuromi idle", "game"),
   eat: findProcessedAsset("pixel kuromi eat", "game"),
+  bath: "/assets/processed/game/pixel-kuromi-mandi.png",
   play: findProcessedAsset("kuromi 2d play", "overlay3d"),
 } as const;
 

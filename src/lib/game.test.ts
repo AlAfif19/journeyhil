@@ -82,7 +82,7 @@ describe("game stat helpers", () => {
       activeStation: "bath" as const,
     } satisfies GameState;
 
-    expect(resolveKuromiSprite(bathing)).toContain("happy");
+    expect(resolveKuromiSprite(bathing)).toContain("mandi");
   });
 
   it("defines station title assets and map positions", () => {
@@ -95,5 +95,6 @@ describe("game stat helpers", () => {
     expect(gameStations.find((station) => station.id === "bed")?.position.y).toBeLessThan(30);
     expect(gameStations.find((station) => station.id === "toy")?.position).toMatchObject({ x: 29, y: 62 });
     expect(gameStations.find((station) => station.id === "bath")?.position.x).toBe(66);
+    expect(gameStations.find((station) => station.id === "bath")?.position.y).toBe(66);
   });
 });

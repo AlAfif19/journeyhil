@@ -32,7 +32,7 @@ export const storyBeats = [
   "Awal bertemu sebagai mentor dan anggota kelompok.",
   "Bertemu beberapa kali untuk main dan ngobrol lebih dekat.",
   "Pernah mengajak makan, tapi obrolannya terlalu lama sampai lupa makan.",
-  "Akhirnya makanan dibelikan saja, dan ceritanya jadi salah satu memori manis.",
+  "Selama proses ini, banyak dinamika dan halangan yang hadir, namun semuanya menjadi bagian dari proses bertumbuh.",
   "Semakin dekat, semakin banyak pengalaman bersama yang layak disimpan.",
 ];
 
@@ -43,7 +43,7 @@ export const timelineItems: TimelineItem[] = [
     detail: "Awal cerita Hilfia, fase kecil yang jadi pembuka perjalanan.",
     image: assetPaths.photos.bocil,
   },
-  { phase: "Phase 2", title: "Bandung", detail: "06 Desember 2023", image: assetPaths.photos.cutee },
+  { phase: "Phase 2", title: "Bandung", detail: "06 Desember 2023", image: "/assets/library/profile/pap-hilfia-kepagn-2.jpg" },
   {
     phase: "Phase 3",
     title: "SMK Negeri 13 Bandung",

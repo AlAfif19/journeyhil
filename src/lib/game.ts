@@ -78,7 +78,7 @@ export const gameStations: GameStation[] = [
     id: "bath",
     label: "Bath",
     titleAsset: "/assets/processed/game/title-bath.png",
-    position: { x: 66, y: 70 },
+    position: { x: 66, y: 66 },
     spritePosition: { x: 66, y: 89 },
     action: "bath",
   },
@@ -171,7 +171,7 @@ export function applyStationAction(state: GameState, stationId: GameStationId): 
 
 export function resolveKuromiSprite(state: Pick<GameState, "mood" | "activeAction">) {
   if (state.activeAction === "eat") return kuromiMoodSprites.eat;
-  if (state.activeAction === "bath") return kuromiMoodSprites.happy;
+  if (state.activeAction === "bath") return kuromiMoodSprites.bath;
   if (state.activeAction === "play") return kuromiMoodSprites.play;
   if (state.activeAction === "sleep") return kuromiMoodSprites.sleepy;
 

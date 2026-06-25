@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { generatedAssets } from "./generatedAssets";
 import { processedAssets } from "./processedAssets";
 import { assetPaths, kuromiMoodSprites, overlayAssets } from "./assets";
-import { timelineItems } from "./journey";
+import { storyBeats, timelineItems } from "./journey";
 
 describe("asset coverage", () => {
   it("includes the full raw media library in the generated manifest", () => {
@@ -20,6 +20,8 @@ describe("asset coverage", () => {
     expect(kuromiMoodSprites.sad).toContain("sad");
     expect(kuromiMoodSprites.sad).toBe("/assets/processed/game/pixel-kuromi-sad.png");
     expect(kuromiMoodSprites.angry).toContain("angry");
+    expect(kuromiMoodSprites.bath).toContain("pixel-kuromi-mandi");
+    expect(assetPaths.game.kuromiBath).toContain("pixel-kuromi-mandi");
     expect(assetPaths.game.kuromiRunLeft).toContain("kuromi-run-left.gif");
     expect(assetPaths.game.kuromiRunRight).toContain("kuromi-run-right.gif");
   });
@@ -28,7 +30,15 @@ describe("asset coverage", () => {
     expect(timelineItems).toHaveLength(10);
     expect(timelineItems[0]?.title).toBe("Hilfia Kecil");
     expect(timelineItems[0]?.image).toContain("hilfia-bocil");
+    expect(timelineItems[1]?.image).toContain("pap-hilfia-kepagn-2");
+    expect(timelineItems[5]?.image).toContain("open-house-tlw");
+    expect(timelineItems[6]?.title).toBe("Kegiatan Kepanitiaan dan Organisasi");
+    expect(timelineItems[8]?.image).toContain("hilfia-pengenalan-ring-1");
     expect(timelineItems.every((item) => Boolean(item.image))).toBe(true);
+  });
+
+  it("keeps the fourth story beat focused on growth dynamics", () => {
+    expect(storyBeats[3]).toBe("Selama proses ini, banyak dinamika dan halangan yang hadir, namun semuanya menjadi bagian dari proses bertumbuh.");
   });
 
   it("generates processed transparent assets for Magical overlays and game UI", () => {

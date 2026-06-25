@@ -513,7 +513,7 @@ button:focus-visible {
 }
 
 .kuromi-sprite.is-walking {
-  width: clamp(70px, 11vw, 122px);
+  width: clamp(62px, 9.5vw, 106px);
 }
 
 .kuromi-sprite.mood-sad,
@@ -1382,7 +1382,7 @@ button:focus-visible {
   }
 
   .theme-magical .kuromi-sprite.is-walking {
-    width: clamp(78px, 6.6vw, 116px);
+    width: clamp(66px, 5.8vw, 102px);
   }
 
   .theme-magical .station-title {
