@@ -1006,7 +1006,7 @@ button:focus-visible {
 }
 
 .timeline-event-2 figure img {
-  object-position: center 78%;
+  object-position: center 90%;
 }
 
 .timeline-event-3 figure img,
@@ -1030,7 +1030,7 @@ button:focus-visible {
 }
 
 .timeline-event-9 figure img {
-  object-position: center 38%;
+  object-position: center 18%;
   transform: scale(1.2);
 }
 
