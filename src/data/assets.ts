@@ -52,6 +52,8 @@ export const assetPaths = {
     room: "/assets/game/kuromi-room.png",
     kuromiPixel: findProcessedAsset("pixel kuromi idle", "game"),
     kuromi2d: findProcessedAsset("kuromi 2d idle", "overlay3d"),
+    kuromiRunLeft: "/assets/processed/game/kuromi-run-left.gif",
+    kuromiRunRight: "/assets/processed/game/kuromi-run-right.gif",
     assets: "/assets/game/game-assets.png",
     decor: "/assets/game/game-decor.png",
     bed: findProcessedAsset("bed", "game"),

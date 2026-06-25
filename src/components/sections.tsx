@@ -160,25 +160,17 @@ export function GallerySection({ theme }: { theme: ThemeKey }) {
     const scrollbox = scrollboxRef.current;
     if (!scrollbox || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
 
-    let frameId = 0;
-    let lastTime = performance.now();
-
-    function tick(time: number) {
-      if (!scrollbox) return;
-      const elapsed = time - lastTime;
-      lastTime = time;
-      scrollbox.scrollTop += elapsed * 0.018;
-
-      if (scrollbox.scrollTop >= scrollbox.scrollHeight / 2) {
-        scrollbox.scrollTop = 0;
+    const intervalId = window.setInterval(() => {
+      const loopPoint = scrollbox.scrollHeight / 2;
+      if (scrollbox.scrollTop >= loopPoint - scrollbox.clientHeight) {
+        scrollbox.scrollTo({ top: 0, behavior: "auto" });
+        return;
       }
 
-      frameId = window.requestAnimationFrame(tick);
-    }
+      scrollbox.scrollBy({ top: Math.max(220, scrollbox.clientHeight * 0.42), behavior: "smooth" });
+    }, 2_600);
 
-    frameId = window.requestAnimationFrame(tick);
-
-    return () => window.cancelAnimationFrame(frameId);
+    return () => window.clearInterval(intervalId);
   }, []);
 
   return (

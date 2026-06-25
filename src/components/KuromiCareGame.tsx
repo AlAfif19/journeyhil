@@ -38,12 +38,19 @@ const stationByAction = {
 
 export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
   const [state, setState] = useState(initialGameState);
+  const [motionPhase, setMotionPhase] = useState<"idle" | "walking" | "acting">("idle");
+  const [walkDirection, setWalkDirection] = useState<"left" | "right">("right");
   const actionTimers = useRef<number[]>([]);
   const spritePosition = useMemo(
     () => gameStations.find((station) => station.id === state.activeStation)?.spritePosition ?? { x: 50, y: 54 },
     [state.activeStation],
   );
-  const currentSprite = resolveKuromiSprite(state);
+  const currentSprite =
+    motionPhase === "walking"
+      ? walkDirection === "right"
+        ? assetPaths.game.kuromiRunRight
+        : assetPaths.game.kuromiRunLeft
+      : resolveKuromiSprite(state);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -64,9 +71,10 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
     actionTimers.current = [];
   }
 
-  function queueActionTimers(applyAction: () => void) {
+  function queueActionTimers(applyAction: () => void, walkMs = 1_350) {
     clearActionTimers();
-    const applyTimer = window.setTimeout(applyAction, 2_200);
+    const actTimer = window.setTimeout(() => setMotionPhase("acting"), walkMs);
+    const applyTimer = window.setTimeout(applyAction, walkMs + 1_350);
     const clearTimer = window.setTimeout(() => {
       setState((current) => ({
         ...current,
@@ -74,14 +82,17 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
         activeStation: null,
         mood: moodForStats(current.stats),
       }));
-    }, 3_900);
-    actionTimers.current = [applyTimer, clearTimer];
+      setMotionPhase("idle");
+    }, walkMs + 2_900);
+    actionTimers.current = [actTimer, applyTimer, clearTimer];
   }
 
   function handleStation(stationId: GameStationId) {
     const station = gameStations.find((item) => item.id === stationId);
     if (!station) return;
 
+    setWalkDirection(station.spritePosition.x >= 50 ? "right" : "left");
+    setMotionPhase("walking");
     setState((current) => ({
       ...current,
       activeAction: station.action,
@@ -93,6 +104,7 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
   }
 
   function handleFood(foodId: FoodItemId) {
+    setMotionPhase("acting");
     setState((current) => ({
       ...current,
       activeAction: "eat",
@@ -100,7 +112,7 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
     }));
     queueActionTimers(() => {
       setState((current) => applyFoodItem(current, foodId));
-    });
+    }, 0);
   }
 
   function handleAction(actionId: GameStationActionId) {

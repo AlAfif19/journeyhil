@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { generatedAssets } from "./generatedAssets";
 import { processedAssets } from "./processedAssets";
-import { kuromiMoodSprites, overlayAssets } from "./assets";
+import { assetPaths, kuromiMoodSprites, overlayAssets } from "./assets";
 import { timelineItems } from "./journey";
 
 describe("asset coverage", () => {
@@ -20,6 +20,8 @@ describe("asset coverage", () => {
     expect(kuromiMoodSprites.sad).toContain("sad");
     expect(kuromiMoodSprites.sad).toBe("/assets/processed/game/pixel-kuromi-sad.png");
     expect(kuromiMoodSprites.angry).toContain("angry");
+    expect(assetPaths.game.kuromiRunLeft).toContain("kuromi-run-left.gif");
+    expect(assetPaths.game.kuromiRunRight).toContain("kuromi-run-right.gif");
   });
 
   it("gives every timeline event an image", () => {
