@@ -513,7 +513,14 @@ button:focus-visible {
 }
 
 .kuromi-sprite.is-walking {
-  width: clamp(62px, 9.5vw, 106px);
+  width: clamp(68px, 10vw, 114px);
+  transition: left 1.45s ease-in-out, bottom 1.45s ease-in-out, transform 220ms ease, filter 220ms ease;
+  filter: brightness(1.2) contrast(1.08) drop-shadow(0 16px 16px rgb(0 0 0 / 42%));
+}
+
+.kuromi-sprite.is-bathing {
+  animation: bath-splash 780ms ease-in-out infinite;
+  filter: brightness(1.12) drop-shadow(0 0 18px rgb(160 210 235 / 58%)) drop-shadow(0 14px 18px rgb(0 0 0 / 35%));
 }
 
 .kuromi-sprite.mood-sad,
@@ -523,6 +530,17 @@ button:focus-visible {
 
 .kuromi-sprite.mood-angry {
   transform: translateX(-50%) rotate(4deg);
+}
+
+@keyframes bath-splash {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(-8px) rotate(-2deg) scale(1);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-14px) rotate(2deg) scale(1.05);
+  }
 }
 
 .game-object {
@@ -1382,7 +1400,7 @@ button:focus-visible {
   }
 
   .theme-magical .kuromi-sprite.is-walking {
-    width: clamp(66px, 5.8vw, 102px);
+    width: clamp(72px, 6.2vw, 110px);
   }
 
   .theme-magical .station-title {

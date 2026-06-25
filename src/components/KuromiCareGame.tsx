@@ -109,7 +109,7 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
     }));
     queueActionTimers(() => {
       setState((current) => applyStationAction(current, stationId));
-    }, station.spritePosition.x >= 50 ? "left" : "right");
+    }, station.spritePosition.x >= 50 ? "left" : "right", 1_650);
   }
 
   function handleFood(foodId: FoodItemId) {
@@ -138,7 +138,7 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
       <div className="game-stage" aria-label="Kuromi room game area">
         <img className="room-art" src={assetPaths.game.room} alt="" aria-hidden="true" />
         <img
-          className={`kuromi-sprite mood-${state.mood} ${state.activeAction ? "is-moving" : ""} ${motionPhase === "walking" ? "is-walking" : ""}`}
+          className={`kuromi-sprite mood-${state.mood} phase-${motionPhase} action-${state.activeAction ?? "idle"} ${state.activeAction ? "is-moving" : ""} ${motionPhase === "walking" ? "is-walking" : ""} ${state.activeAction === "bath" && motionPhase === "acting" ? "is-bathing" : ""}`}
           src={currentSprite}
           alt={`Kuromi is ${state.mood}`}
           style={{ left: `${spritePosition.x}%`, bottom: `${100 - spritePosition.y}%` }}
