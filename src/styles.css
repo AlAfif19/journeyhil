@@ -2044,6 +2044,78 @@ button:focus-visible {
   }
 }
 
+@media (max-width: 860px) {
+  .theme-magical .timeline-section .timeline-path {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 1.1rem !important;
+    width: 100% !important;
+  }
+
+  .theme-magical .timeline-section .timeline-event,
+  .theme-magical .timeline-section .timeline-event:nth-child(even) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0.55rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    align-items: stretch !important;
+    justify-items: stretch !important;
+  }
+
+  .theme-magical .timeline-section .timeline-event::before {
+    display: none !important;
+  }
+
+  .theme-magical .timeline-section .timeline-media,
+  .theme-magical .timeline-section .timeline-event:nth-child(even) .timeline-media,
+  .theme-magical .timeline-section .timeline-event figure,
+  .theme-magical .timeline-section .timeline-event:nth-child(even) figure {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 260px !important;
+    margin: 0 !important;
+    justify-self: stretch !important;
+  }
+
+  .theme-magical .timeline-section .timeline-media img,
+  .theme-magical .timeline-section .timeline-event figure img {
+    display: block !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .theme-magical .timeline-section .timeline-copy,
+  .theme-magical .timeline-section .timeline-event:nth-child(even) .timeline-copy {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 150px !important;
+    margin: 0 !important;
+    text-align: left !important;
+    justify-self: stretch !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .theme-magical .timeline-section .timeline-media,
+  .theme-magical .timeline-section .timeline-event:nth-child(even) .timeline-media,
+  .theme-magical .timeline-section .timeline-event figure,
+  .theme-magical .timeline-section .timeline-event:nth-child(even) figure {
+    height: 230px !important;
+  }
+
+  .theme-magical .timeline-section .timeline-copy,
+  .theme-magical .timeline-section .timeline-event:nth-child(even) .timeline-copy {
+    min-height: 148px !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
