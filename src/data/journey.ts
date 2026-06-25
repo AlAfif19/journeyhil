@@ -90,6 +90,8 @@ export const timelineItems: TimelineItem[] = [
 ];
 
 function makeCaption(name: string) {
+  if (name.toLowerCase() === "hilfia clean ( bisa jadi hero )") return "Hilfia";
+
   return name
     .split(" ")
     .filter(Boolean)

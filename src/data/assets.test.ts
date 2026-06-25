@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { generatedAssets } from "./generatedAssets";
 import { processedAssets } from "./processedAssets";
 import { assetPaths, kuromiMoodSprites, overlayAssets } from "./assets";
-import { storyBeats, timelineItems } from "./journey";
+import { galleryItems, storyBeats, timelineItems } from "./journey";
 
 describe("asset coverage", () => {
   it("includes the full raw media library in the generated manifest", () => {
@@ -39,6 +39,10 @@ describe("asset coverage", () => {
 
   it("keeps the fourth story beat focused on growth dynamics", () => {
     expect(storyBeats[3]).toBe("Selama proses ini, banyak dinamika dan halangan yang hadir, namun semuanya menjadi bagian dari proses bertumbuh.");
+  });
+
+  it("shortens the clean hero candidate gallery caption", () => {
+    expect(galleryItems.find((item) => item.src.includes("hilfia-clean-bisa-jadi-hero"))?.caption).toBe("Hilfia");
   });
 
   it("generates processed transparent assets for Magical overlays and game UI", () => {

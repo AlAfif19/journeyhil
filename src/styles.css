@@ -523,6 +523,12 @@ button:focus-visible {
   filter: brightness(1.12) drop-shadow(0 0 18px rgb(160 210 235 / 58%)) drop-shadow(0 14px 18px rgb(0 0 0 / 35%));
 }
 
+.kuromi-sprite.action-bath.phase-acting {
+  z-index: 7;
+  width: clamp(92px, 11vw, 126px);
+  filter: brightness(1.2) contrast(1.08) drop-shadow(0 0 20px rgb(160 210 235 / 66%)) drop-shadow(0 14px 18px rgb(0 0 0 / 42%));
+}
+
 .kuromi-sprite.mood-sad,
 .kuromi-sprite.mood-sleepy {
   filter: grayscale(0.3) drop-shadow(0 14px 18px rgb(0 0 0 / 35%));
@@ -636,6 +642,46 @@ button:focus-visible {
   padding: 2rem 0;
   color: rgb(255 250 253 / 66%);
   font-weight: 700;
+}
+
+.music-player {
+  position: fixed;
+  right: clamp(12px, 2vw, 24px);
+  bottom: clamp(12px, 2vw, 24px);
+  z-index: 140;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  max-width: min(360px, calc(100vw - 24px));
+  padding: 0.55rem 0.65rem;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 999px;
+  color: var(--white);
+  background: rgb(42 27 61 / 74%);
+  box-shadow: 0 18px 44px rgb(0 0 0 / 28%);
+  backdrop-filter: blur(18px);
+}
+
+.music-player button {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 999px;
+  color: var(--ink);
+  background: linear-gradient(135deg, var(--pink), var(--soft-blue));
+  cursor: pointer;
+}
+
+.music-player span {
+  max-width: 180px;
+  overflow: hidden;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .theme-magical::before {
@@ -951,7 +997,7 @@ button:focus-visible {
 }
 
 .timeline-event-2 figure img {
-  object-position: center 68%;
+  object-position: center 78%;
 }
 
 .timeline-copy {
@@ -1408,6 +1454,16 @@ button:focus-visible {
   }
 }
 
+@media (max-width: 1179px) {
+  .theme-magical .station-title.station-bed {
+    left: 23% !important;
+  }
+
+  .theme-magical .kuromi-sprite.action-sleep.phase-acting {
+    left: 23% !important;
+  }
+}
+
 .theme-magical .timeline-path::before {
   width: 2px;
   background:
@@ -1754,6 +1810,21 @@ button:focus-visible {
 }
 
 @media (max-width: 560px) {
+  .music-player {
+    right: 10px;
+    left: 10px;
+    bottom: 10px;
+    justify-content: center;
+  }
+
+  .music-player span {
+    max-width: calc(100vw - 132px);
+  }
+
+  .site-footer {
+    padding-bottom: 5rem;
+  }
+
   .profile-card {
     grid-template-columns: 1fr;
   }
