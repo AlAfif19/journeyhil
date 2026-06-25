@@ -1,5 +1,4 @@
 import { ArrowDown, Gamepad2, Heart, Instagram, MapPin, Sparkles } from "lucide-react";
-import { useState } from "react";
 import { assetPaths } from "../data/assets";
 import {
   galleryItems,
@@ -126,42 +125,13 @@ export function StorySection({ theme }: { theme: ThemeKey }) {
 }
 
 export function TimelineSection({ theme }: { theme: ThemeKey }) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const activeItem = timelineItems[activeIndex];
-
   return (
     <section className="section-wrap timeline-section" id="timeline" data-theme={theme}>
       <div className="section-heading">
         <span>{themeCopy[theme].timelineTitle}</span>
         <h2>From school, campus, organizations, and memories</h2>
       </div>
-      <div className="timeline-map-panel">
-        <div className="timeline-map" aria-label="Journey timeline map">
-          <img src="/assets/timeline.png" alt="" aria-hidden="true" />
-          {timelineItems.map((item, index) => (
-            <button
-              className={`timeline-map-point timeline-map-point-${index + 1} ${index === activeIndex ? "active" : ""}`}
-              key={`${item.phase}-${item.title}`}
-              type="button"
-              onClick={() => setActiveIndex(index)}
-              aria-label={`Open ${item.title}`}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-        <article className="timeline-preview">
-          <figure>
-            <img src={activeItem.image} alt={`Dokumentasi ${activeItem.title}`} />
-          </figure>
-          <div>
-            <span>{activeItem.phase}</span>
-            <h3>{activeItem.title}</h3>
-            <p>{activeItem.detail}</p>
-          </div>
-        </article>
-      </div>
-      <div className="timeline-path" aria-hidden="true">
+      <div className="timeline-path">
         {timelineItems.map((item, index) => (
           <article className="timeline-event" key={`${item.phase}-${item.title}`}>
             <div className="timeline-node">
