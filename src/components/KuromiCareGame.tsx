@@ -71,10 +71,19 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
     actionTimers.current = [];
   }
 
-  function queueActionTimers(applyAction: () => void, walkMs = 1_350) {
+  function queueActionTimers(applyAction: () => void, returnDirection: "left" | "right" | null, walkMs = 1_350) {
     clearActionTimers();
     const actTimer = window.setTimeout(() => setMotionPhase("acting"), walkMs);
     const applyTimer = window.setTimeout(applyAction, walkMs + 1_350);
+    const returnTimer = window.setTimeout(() => {
+      if (!returnDirection) return;
+      setWalkDirection(returnDirection);
+      setMotionPhase("walking");
+      setState((current) => ({
+        ...current,
+        activeStation: null,
+      }));
+    }, walkMs + 2_600);
     const clearTimer = window.setTimeout(() => {
       setState((current) => ({
         ...current,
@@ -83,8 +92,8 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
         mood: moodForStats(current.stats),
       }));
       setMotionPhase("idle");
-    }, walkMs + 2_900);
-    actionTimers.current = [actTimer, applyTimer, clearTimer];
+    }, walkMs + (returnDirection ? 3_950 : 2_900));
+    actionTimers.current = [actTimer, applyTimer, returnTimer, clearTimer];
   }
 
   function handleStation(stationId: GameStationId) {
@@ -100,7 +109,7 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
     }));
     queueActionTimers(() => {
       setState((current) => applyStationAction(current, stationId));
-    });
+    }, station.spritePosition.x >= 50 ? "left" : "right");
   }
 
   function handleFood(foodId: FoodItemId) {
@@ -112,7 +121,7 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
     }));
     queueActionTimers(() => {
       setState((current) => applyFoodItem(current, foodId));
-    }, 0);
+    }, null, 0);
   }
 
   function handleAction(actionId: GameStationActionId) {
