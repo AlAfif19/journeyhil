@@ -1,8 +1,6 @@
 import { ArrowDown, Gamepad2, Heart, Instagram, MapPin, Sparkles } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { assetPaths } from "../data/assets";
 import {
-  GALLERY_BATCH_SIZE,
   galleryItems,
   initialGalleryItems,
   journeyProfile,
@@ -156,29 +154,6 @@ export function TimelineSection({ theme }: { theme: ThemeKey }) {
 }
 
 export function GallerySection({ theme }: { theme: ThemeKey }) {
-  const scrollboxRef = useRef<HTMLDivElement>(null);
-  const [visibleCount, setVisibleCount] = useState(initialGalleryItems.length);
-  const visibleItems = useMemo(() => galleryItems.slice(0, visibleCount), [visibleCount]);
-  const loopItems = useMemo(() => visibleItems.slice(0, Math.min(6, visibleItems.length)), [visibleItems]);
-  const hasMoreItems = visibleCount < galleryItems.length;
-
-  useEffect(() => {
-    const scrollbox = scrollboxRef.current;
-    if (!scrollbox || visibleItems.length < 8 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
-
-    const intervalId = window.setInterval(() => {
-      const loopPoint = scrollbox.scrollHeight / 2;
-      if (scrollbox.scrollTop >= loopPoint - scrollbox.clientHeight) {
-        scrollbox.scrollTo({ top: 0, behavior: "auto" });
-        return;
-      }
-
-      scrollbox.scrollBy({ top: Math.max(220, scrollbox.clientHeight * 0.42), behavior: "smooth" });
-    }, 2_600);
-
-    return () => window.clearInterval(intervalId);
-  }, [visibleItems.length]);
-
   return (
     <section className="section-wrap gallery-section" id="gallery">
       <DecorativeOverlays theme={theme} area="gallery" />
@@ -186,22 +161,13 @@ export function GallerySection({ theme }: { theme: ThemeKey }) {
         <span>{theme === "scrapbook" ? "Polaroid memories" : theme === "pixel" ? "Inventory album" : "Floating gallery"}</span>
         <h2>Photos, activities, and saved assets in one story wall</h2>
       </div>
-      <div className="gallery-scrollbox" aria-label="Complete photo archive" ref={scrollboxRef}>
+      <div className="gallery-scrollbox" aria-label="Complete photo archive">
         <div className="gallery-masonry">
-          {[...visibleItems, ...loopItems].map((item, index) => (
+          {initialGalleryItems.map((item, index) => (
             <GalleryCard item={item} key={`${item.src}-${item.caption}-${index}`} />
           ))}
         </div>
       </div>
-      {hasMoreItems ? (
-        <button
-          type="button"
-          className="gallery-load-more"
-          onClick={() => setVisibleCount((current) => Math.min(current + GALLERY_BATCH_SIZE, galleryItems.length))}
-        >
-          More memories
-        </button>
-      ) : null}
     </section>
   );
 }
