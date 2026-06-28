@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { generatedAssets } from "./generatedAssets";
 import { processedAssets } from "./processedAssets";
 import { assetPaths, kuromiMoodSprites, overlayAssets } from "./assets";
-import { galleryItems, storyBeats, timelineItems } from "./journey";
+import { galleryItems, initialGalleryItems, storyBeats, timelineItems } from "./journey";
+import { soundtrack } from "./soundtrack";
 
 describe("asset coverage", () => {
   it("includes the full raw media library in the generated manifest", () => {
@@ -43,6 +44,23 @@ describe("asset coverage", () => {
 
   it("shortens the clean hero candidate gallery caption", () => {
     expect(galleryItems.find((item) => item.src.includes("hilfia-clean-bisa-jadi-hero"))?.caption).toBe("Hilfia");
+  });
+
+  it("keeps the first gallery render smaller than the full archive", () => {
+    expect(galleryItems.length).toBeGreaterThan(40);
+    expect(initialGalleryItems.length).toBeLessThan(galleryItems.length);
+    expect(initialGalleryItems.length).toBeLessThanOrEqual(24);
+  });
+
+  it("includes the XXL soundtrack in the music player list", () => {
+    expect(soundtrack).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          title: "XXL",
+          src: "/assets/audio/lany-xxl.mpeg",
+        }),
+      ]),
+    );
   });
 
   it("generates processed transparent assets for Magical overlays and game UI", () => {

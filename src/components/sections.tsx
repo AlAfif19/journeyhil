@@ -1,8 +1,10 @@
 import { ArrowDown, Gamepad2, Heart, Instagram, MapPin, Sparkles } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { assetPaths } from "../data/assets";
 import {
+  GALLERY_BATCH_SIZE,
   galleryItems,
+  initialGalleryItems,
   journeyProfile,
   storyBeats,
   themeOverlays,
@@ -51,7 +53,7 @@ export function HeroSection({ theme }: { theme: ThemeKey }) {
         </div>
       </div>
       <figure className="hero-photo-frame">
-        <img src={assetPaths.photos.hero} alt="Hilfia Qisthi Amalia in a black outfit" />
+        <img src={assetPaths.photos.hero} alt="Hilfia Qisthi Amalia in a black outfit" decoding="async" />
       </figure>
     </section>
   );
@@ -139,7 +141,7 @@ export function TimelineSection({ theme }: { theme: ThemeKey }) {
               <span>{index + 1}</span>
             </div>
             <figure className={`timeline-media timeline-media-${index + 1}`}>
-              <img src={item.image} alt={`Dokumentasi ${item.title}`} />
+              <img src={item.image} alt={`Dokumentasi ${item.title}`} loading="lazy" decoding="async" />
             </figure>
             <div className="timeline-copy">
               <span>{item.phase}</span>
@@ -155,10 +157,14 @@ export function TimelineSection({ theme }: { theme: ThemeKey }) {
 
 export function GallerySection({ theme }: { theme: ThemeKey }) {
   const scrollboxRef = useRef<HTMLDivElement>(null);
+  const [visibleCount, setVisibleCount] = useState(initialGalleryItems.length);
+  const visibleItems = useMemo(() => galleryItems.slice(0, visibleCount), [visibleCount]);
+  const loopItems = useMemo(() => visibleItems.slice(0, Math.min(6, visibleItems.length)), [visibleItems]);
+  const hasMoreItems = visibleCount < galleryItems.length;
 
   useEffect(() => {
     const scrollbox = scrollboxRef.current;
-    if (!scrollbox || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+    if (!scrollbox || visibleItems.length < 8 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
 
     const intervalId = window.setInterval(() => {
       const loopPoint = scrollbox.scrollHeight / 2;
@@ -171,22 +177,31 @@ export function GallerySection({ theme }: { theme: ThemeKey }) {
     }, 2_600);
 
     return () => window.clearInterval(intervalId);
-  }, []);
+  }, [visibleItems.length]);
 
   return (
     <section className="section-wrap gallery-section" id="gallery">
       <DecorativeOverlays theme={theme} area="gallery" />
       <div className="section-heading">
         <span>{theme === "scrapbook" ? "Polaroid memories" : theme === "pixel" ? "Inventory album" : "Floating gallery"}</span>
-        <h2>All photos, activities, and saved assets in one story wall</h2>
+        <h2>Photos, activities, and saved assets in one story wall</h2>
       </div>
       <div className="gallery-scrollbox" aria-label="Complete photo archive" ref={scrollboxRef}>
         <div className="gallery-masonry">
-          {[...galleryItems, ...galleryItems.slice(0, 12)].map((item, index) => (
+          {[...visibleItems, ...loopItems].map((item, index) => (
             <GalleryCard item={item} key={`${item.src}-${item.caption}-${index}`} />
           ))}
         </div>
       </div>
+      {hasMoreItems ? (
+        <button
+          type="button"
+          className="gallery-load-more"
+          onClick={() => setVisibleCount((current) => Math.min(current + GALLERY_BATCH_SIZE, galleryItems.length))}
+        >
+          More memories
+        </button>
+      ) : null}
     </section>
   );
 }
@@ -195,9 +210,9 @@ function GalleryCard({ item, compact = false }: { item: (typeof galleryItems)[nu
   return (
     <figure className={`gallery-card ${compact ? "gallery-card-compact" : ""}`}>
       {item.kind === "video" ? (
-        <video src={item.src} aria-label={item.alt} muted loop playsInline preload="metadata" />
+        <video src={item.src} aria-label={item.alt} muted loop playsInline preload="none" />
       ) : (
-        <img src={item.src} alt={item.alt} loading={compact ? "lazy" : "eager"} />
+        <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
       )}
       <figcaption>
         <Heart aria-hidden="true" size={15} />
@@ -211,7 +226,14 @@ function DecorativeOverlays({ theme, area }: { theme: ThemeKey; area: "hero" | "
   return (
     <div className={`decorative-overlays decorative-overlays-${area}`} aria-hidden="true">
       {themeOverlays[theme].map((src, index) => (
-        <img className={`overlay-asset overlay-asset-${index + 1}`} src={src} alt="" key={`${src}-${area}`} />
+        <img
+          className={`overlay-asset overlay-asset-${index + 1}`}
+          src={src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          key={`${src}-${area}`}
+        />
       ))}
     </div>
   );

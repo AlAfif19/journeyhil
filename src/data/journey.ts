@@ -117,6 +117,9 @@ export const galleryItems: GalleryItem[] = allPhotoAssets.map((asset) => ({
   kind: asset.kind,
 }));
 
+export const GALLERY_BATCH_SIZE = 18;
+export const initialGalleryItems = galleryItems.slice(0, GALLERY_BATCH_SIZE);
+
 export const themeOverlays = overlayAssets;
 
 export const gameActions = [

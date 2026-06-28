@@ -2,17 +2,7 @@ import { Pause, Play, SkipForward } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import type { ThemeKey } from "../data/journey";
-
-const soundtrack = [
-  {
-    title: "Kyurukyun Mode",
-    src: "/assets/audio/kuromi-kyurukyunn-mode.mpeg",
-  },
-  {
-    title: "Greedy Greedy",
-    src: "/assets/audio/kuromi-greedy-greedy.mpeg",
-  },
-] as const;
+import { soundtrack } from "../data/soundtrack";
 
 export function ThemeShell({ theme, children }: { theme: ThemeKey; children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement>(null);
