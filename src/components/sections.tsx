@@ -2,7 +2,6 @@ import { ArrowDown, Gamepad2, Heart, Instagram, MapPin, Sparkles } from "lucide-
 import { assetPaths } from "../data/assets";
 import {
   galleryItems,
-  initialGalleryItems,
   journeyProfile,
   storyBeats,
   themeOverlays,
@@ -163,7 +162,7 @@ export function GallerySection({ theme }: { theme: ThemeKey }) {
       </div>
       <div className="gallery-scrollbox" aria-label="Complete photo archive">
         <div className="gallery-masonry">
-          {initialGalleryItems.map((item, index) => (
+          {galleryItems.map((item, index) => (
             <GalleryCard item={item} key={`${item.src}-${item.caption}-${index}`} />
           ))}
         </div>
