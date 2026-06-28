@@ -1231,8 +1231,8 @@ button:focus-visible {
   margin: 1rem auto 0;
   border: 1px solid rgb(255 255 255 / 28%);
   border-radius: 8px;
-  color: var(--ink);
-  background: linear-gradient(135deg, var(--white), var(--pink-soft));
+  color: var(--white);
+  background: linear-gradient(135deg, #3a244b, #7e4b88);
   box-shadow: 0 14px 28px rgb(98 58 107 / 18%);
   font-weight: 800;
   cursor: pointer;
