@@ -3,13 +3,49 @@ import {
   applyFoodItem,
   applyStationAction,
   clampStat,
+  clearStoredGameStats,
   decayStats,
+  decodeSharedGameStats,
+  encodeSharedGameStats,
+  GAME_STATS_STORAGE_KEY,
   gameStations,
   initialGameStats,
+  readStoredGameStats,
   moodForStats,
+  normalizeGameStats,
   resolveKuromiSprite,
+  stateFromStats,
   type GameState,
+  writeStoredGameStats,
 } from "./game";
+
+class MemoryStorage implements Storage {
+  private values = new Map<string, string>();
+
+  get length() {
+    return this.values.size;
+  }
+
+  clear() {
+    this.values.clear();
+  }
+
+  getItem(key: string) {
+    return this.values.get(key) ?? null;
+  }
+
+  key(index: number) {
+    return Array.from(this.values.keys())[index] ?? null;
+  }
+
+  removeItem(key: string) {
+    this.values.delete(key);
+  }
+
+  setItem(key: string, value: string) {
+    this.values.set(key, value);
+  }
+}
 
 describe("game stat helpers", () => {
   it("clamps stat values between 0 and 100", () => {
@@ -96,5 +132,68 @@ describe("game stat helpers", () => {
     expect(gameStations.find((station) => station.id === "toy")?.position).toMatchObject({ x: 29, y: 62 });
     expect(gameStations.find((station) => station.id === "bath")?.position.x).toBe(66);
     expect(gameStations.find((station) => station.id === "bath")?.position.y).toBe(66);
+  });
+
+  it("normalizes imported stats before using them", () => {
+    expect(
+      normalizeGameStats({
+        hunger: 240,
+        energy: -40,
+        cleanliness: 34.7,
+        happiness: "88",
+        experience: Number.NaN,
+      }),
+    ).toEqual({
+      hunger: 100,
+      energy: 0,
+      cleanliness: 35,
+      happiness: initialGameStats.happiness,
+      experience: initialGameStats.experience,
+    });
+  });
+
+  it("round-trips stats through a compact share payload", () => {
+    const stats = { hunger: 55, energy: 45, cleanliness: 95, happiness: 72, experience: 12 };
+    const encoded = encodeSharedGameStats(stats);
+
+    expect(encoded).toMatch(/^[A-Za-z0-9_-]+$/);
+    expect(decodeSharedGameStats(encoded)).toEqual(stats);
+  });
+
+  it("ignores invalid shared stat payloads", () => {
+    expect(decodeSharedGameStats("not-json")).toBeNull();
+    expect(decodeSharedGameStats("")).toBeNull();
+  });
+
+  it("reads, writes, and clears stored stats", () => {
+    const storage = new MemoryStorage();
+    const stats = { hunger: 10, energy: 20, cleanliness: 30, happiness: 40, experience: 50 };
+
+    writeStoredGameStats(storage, stats);
+
+    expect(storage.getItem(GAME_STATS_STORAGE_KEY)).toBeTruthy();
+    expect(readStoredGameStats(storage)).toEqual(stats);
+
+    clearStoredGameStats(storage);
+    expect(readStoredGameStats(storage)).toBeNull();
+  });
+
+  it("drops corrupted stored stats", () => {
+    const storage = new MemoryStorage();
+    storage.setItem(GAME_STATS_STORAGE_KEY, "{broken");
+
+    expect(readStoredGameStats(storage)).toBeNull();
+    expect(storage.getItem(GAME_STATS_STORAGE_KEY)).toBeNull();
+  });
+
+  it("creates a fresh game state from imported stats", () => {
+    const imported = stateFromStats({ ...initialGameStats, hunger: 8 });
+
+    expect(imported).toEqual({
+      stats: { ...initialGameStats, hunger: 8 },
+      mood: "sad",
+      activeAction: null,
+      activeStation: null,
+    });
   });
 });

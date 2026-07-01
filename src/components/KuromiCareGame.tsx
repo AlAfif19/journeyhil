@@ -1,20 +1,27 @@
-import { Bath, Bed, Gamepad2, Sparkles } from "lucide-react";
+import { Bath, Bed, Copy, Gamepad2, RotateCcw, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { assetPaths } from "../data/assets";
 import type { ThemeKey } from "../data/journey";
 import {
   applyFoodItem,
   applyStationAction,
+  clearStoredGameStats,
   decayStats,
+  decodeSharedGameStats,
+  encodeSharedGameStats,
+  GAME_STATS_QUERY_PARAM,
   foodItems,
   gameStations,
   initialGameState,
   moodForStats,
+  readStoredGameStats,
   resolveKuromiSprite,
+  stateFromStats,
   type FoodItemId,
   type GameStationActionId,
   type GameStationId,
   type GameStats,
+  writeStoredGameStats,
 } from "../lib/game";
 
 const actionIcon = {
@@ -36,10 +43,33 @@ const stationByAction = {
   play: "toy",
 } satisfies Record<GameStationActionId, GameStationId>;
 
+function getInitialGameState() {
+  if (typeof window === "undefined") return initialGameState;
+
+  const url = new URL(window.location.href);
+  const sharedStats = url.searchParams.get(GAME_STATS_QUERY_PARAM);
+
+  if (sharedStats) {
+    const decodedStats = decodeSharedGameStats(sharedStats);
+    url.searchParams.delete(GAME_STATS_QUERY_PARAM);
+    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+
+    if (decodedStats) {
+      const sharedState = stateFromStats(decodedStats);
+      writeStoredGameStats(window.localStorage, sharedState.stats);
+      return sharedState;
+    }
+  }
+
+  const storedStats = readStoredGameStats(window.localStorage);
+  return storedStats ? stateFromStats(storedStats) : initialGameState;
+}
+
 export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
-  const [state, setState] = useState(initialGameState);
+  const [state, setState] = useState(getInitialGameState);
   const [motionPhase, setMotionPhase] = useState<"idle" | "walking" | "acting">("idle");
   const [walkDirection, setWalkDirection] = useState<"left" | "right">("right");
+  const [shareStatus, setShareStatus] = useState("Share");
   const actionTimers = useRef<number[]>([]);
   const spritePosition = useMemo(
     () => gameStations.find((station) => station.id === state.activeStation)?.spritePosition ?? { x: 50, y: 54 },
@@ -65,6 +95,10 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
       actionTimers.current.forEach((timerId) => window.clearTimeout(timerId));
     };
   }, []);
+
+  useEffect(() => {
+    writeStoredGameStats(window.localStorage, state.stats);
+  }, [state.stats]);
 
   function clearActionTimers() {
     actionTimers.current.forEach((timerId) => window.clearTimeout(timerId));
@@ -128,11 +162,42 @@ export function KuromiCareGame({ theme }: { theme: ThemeKey }) {
     handleStation(stationByAction[actionId]);
   }
 
+  async function handleShare() {
+    const url = new URL(window.location.href);
+    url.searchParams.set(GAME_STATS_QUERY_PARAM, encodeSharedGameStats(state.stats));
+
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      setShareStatus("Copied");
+      window.setTimeout(() => setShareStatus("Share"), 1_800);
+    } catch {
+      setShareStatus("Copy failed");
+      window.setTimeout(() => setShareStatus("Share"), 1_800);
+    }
+  }
+
+  function handleReset() {
+    clearActionTimers();
+    clearStoredGameStats(window.localStorage);
+    setMotionPhase("idle");
+    setWalkDirection("right");
+    setState(initialGameState);
+  }
+
   return (
     <div className={`kuromi-game kuromi-game-${theme}`}>
       <div className="game-heading">
         <span>Kuromi Care</span>
-        <strong>{state.mood}</strong>
+        <div className="game-heading-actions">
+          <strong>{state.mood}</strong>
+          <button className="game-utility-button" type="button" onClick={handleShare} aria-label="Copy game stats share link">
+            <Copy aria-hidden="true" size={16} />
+            <span>{shareStatus}</span>
+          </button>
+          <button className="game-utility-button icon-only" type="button" onClick={handleReset} aria-label="Reset saved game stats">
+            <RotateCcw aria-hidden="true" size={16} />
+          </button>
+        </div>
       </div>
 
       <div className="game-stage" aria-label="Kuromi room game area">

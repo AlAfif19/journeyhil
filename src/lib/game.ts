@@ -22,6 +22,7 @@ export type GameState = {
 };
 
 export type StatEffect = Partial<GameStats>;
+type GameStatsKey = keyof GameStats;
 
 export type FoodItem = {
   id: FoodItemId;
@@ -53,6 +54,9 @@ export const initialGameState: GameState = {
   activeAction: null,
   activeStation: null,
 };
+
+export const GAME_STATS_STORAGE_KEY = "journeyhil:kuromi-care-stats:v1";
+export const GAME_STATS_QUERY_PARAM = "gameStats";
 
 export const foodItems: FoodItem[] = [
   { id: "strawberry", label: "Strawberry", asset: assetPaths.game.strawberry, effect: { hunger: 18, happiness: 8 } },
@@ -94,6 +98,84 @@ export const gameStations: GameStation[] = [
 
 export function clampStat(value: number) {
   return Math.max(0, Math.min(100, value));
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function normalizeStatValue(value: unknown, fallback: number) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return fallback;
+  return clampStat(Math.round(value));
+}
+
+export function normalizeGameStats(value: unknown): GameStats {
+  const source = isRecord(value) ? value : {};
+  const keys: GameStatsKey[] = ["hunger", "energy", "cleanliness", "happiness", "experience"];
+
+  return keys.reduce((stats, key) => {
+    stats[key] = normalizeStatValue(source[key], initialGameStats[key]);
+    return stats;
+  }, {} as GameStats);
+}
+
+export function stateFromStats(stats: unknown): GameState {
+  const normalizedStats = normalizeGameStats(stats);
+
+  return {
+    stats: normalizedStats,
+    mood: moodForStats(normalizedStats),
+    activeAction: null,
+    activeStation: null,
+  };
+}
+
+function encodeBase64Url(value: string) {
+  const base64 =
+    typeof btoa === "function" ? btoa(value) : Buffer.from(value, "utf-8").toString("base64");
+
+  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function decodeBase64Url(value: string) {
+  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
+
+  return typeof atob === "function" ? atob(padded) : Buffer.from(padded, "base64").toString("utf-8");
+}
+
+export function encodeSharedGameStats(stats: GameStats) {
+  return encodeBase64Url(JSON.stringify(normalizeGameStats(stats)));
+}
+
+export function decodeSharedGameStats(value: string | null): GameStats | null {
+  if (!value) return null;
+
+  try {
+    return normalizeGameStats(JSON.parse(decodeBase64Url(value)));
+  } catch {
+    return null;
+  }
+}
+
+export function readStoredGameStats(storage: Pick<Storage, "getItem" | "removeItem">): GameStats | null {
+  const saved = storage.getItem(GAME_STATS_STORAGE_KEY);
+  if (!saved) return null;
+
+  try {
+    return normalizeGameStats(JSON.parse(saved));
+  } catch {
+    storage.removeItem(GAME_STATS_STORAGE_KEY);
+    return null;
+  }
+}
+
+export function writeStoredGameStats(storage: Pick<Storage, "setItem">, stats: GameStats) {
+  storage.setItem(GAME_STATS_STORAGE_KEY, JSON.stringify(normalizeGameStats(stats)));
+}
+
+export function clearStoredGameStats(storage: Pick<Storage, "removeItem">) {
+  storage.removeItem(GAME_STATS_STORAGE_KEY);
 }
 
 export function applyEffects(stats: GameStats, effect: StatEffect): GameStats {
