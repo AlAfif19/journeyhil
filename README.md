@@ -18,29 +18,43 @@ JourneyHil Magical adalah website kenangan bertema Magical Kuromi untuk Hilfia Q
 
 Section pembuka yang langsung mengenalkan tema Magical Kuromi Journey. Di dalamnya ada judul Journey of Hilfia Qisthi Amalia, foto utama, tombol untuk menuju perjalanan, dan tombol untuk langsung bermain Kuromi Care.
 
+![Hero section screenshot](docs/screenshots/section-hero.png)
+
 ### About Hilfia
 
 Section profil yang menampilkan identitas Hilfia, kota, tanggal lahir, Instagram, hal favorit, game favorit, karakter favorit, dan hobi. Bagian ini menjadi pengenal personal sebelum pengunjung masuk ke cerita dan dokumentasi.
+
+![About Hilfia section screenshot](docs/screenshots/section-about.png)
 
 ### Story
 
 Section cerita singkat yang merangkum proses kedekatan dari awal bertemu, sering main, obrolan yang makin panjang, sampai dinamika yang menjadi bagian dari perjalanan. Setiap cerita ditampilkan sebagai urutan memori.
 
+![Story section screenshot](docs/screenshots/section-story.png)
+
 ### Timeline
 
 Section perjalanan hidup dan aktivitas Hilfia dalam beberapa fase. Timeline memuat fase kecil, Bandung, SMK, Universitas Kebangsaan, awal dekat, Teater Lima Wajah, kepanitiaan, asisten lab, HMTL, dan DPM.
+
+![Timeline section screenshot](docs/screenshots/section-timeline.png)
 
 ### Gallery
 
 Section galeri yang mengumpulkan foto, video, aktivitas, organisasi, sekolah, dan momen personal. Galeri menggunakan data aset yang sudah diproses agar dokumentasi dapat ditampilkan sebagai satu story wall.
 
+![Gallery section screenshot](docs/screenshots/section-gallery.png)
+
 ### Music Player
 
 Pemutar musik kecil yang selalu tersedia di halaman. Pengunjung bisa play, pause, dan lanjut ke soundtrack berikutnya. Saat lagu selesai, player otomatis berpindah ke track berikutnya.
 
+![Music player screenshot](docs/screenshots/section-music-player.png)
+
 ### Kuromi Care
 
 Mini game perawatan Kuromi yang berada di section game. Pemain bisa memberi makan, menidurkan, memandikan, mengajak main, membagikan stat, dan reset progres yang tersimpan di browser.
+
+![Kuromi Care section screenshot](docs/screenshots/section-kuromi-care.png)
 
 ## Logika Game Kuromi Care
 
