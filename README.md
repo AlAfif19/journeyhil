@@ -4,6 +4,10 @@ JourneyHil Magical adalah website kenangan bertema Magical Kuromi untuk Hilfia Q
 
 ## Preview
 
+### Root Magical
+
+![JourneyHil root magical preview](docs/screenshots/preview-root.png)
+
 ### Magical Theme
 
 ![JourneyHil magical theme](docs/screenshots/preview-magical.png)
